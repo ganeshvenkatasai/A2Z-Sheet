@@ -868,3 +868,282 @@ int findLargestMinDistance(vector<int> &boards, int k) {
 Minimize Max Distance to Gas Station
 ```
 ```
+Median of 2 sorted arrays
+```
+```
+Kth element of 2 sorted arrays
+```
+```
+Row with max 1s
+```
+int countOnes(vector<int> &row){
+    int low = 0, high = row.size()-1, mid;
+    while(low <= high) {
+        mid = (low + high) / 2;
+        if(row[mid] < row[mid+1]) {
+            return row.size()-mid-1;
+        }
+        else if(row[mid] == 0) {
+            low = mid + 1;
+        }
+        else {
+            high = mid - 1;
+        }
+    }
+    return row.size()-high-1;
+}
+
+int rowWithMax1s(vector<vector<int>> &matrix, int n, int m)
+{
+    int maxOnes = 0, maxOnesIndex = 0;
+    for(int i = 0; i < n; i++) {
+        if(matrix[i][0]==1 && maxOnes != m){
+            maxOnes = m;
+            maxOnesIndex = i;
+        }
+        else if(matrix[i][m-1]!=0){
+            int rowOnes = countOnes(matrix[i]);
+            if(rowOnes > maxOnes){
+                maxOnes = rowOnes;
+                maxOnesIndex = i;
+            }
+        }
+    }
+    return maxOnesIndex;
+}
+```
+Search a 2D Matrix
+```
+bool searchMatrix(vector<vector<int>>& m, int t) {
+    int r=m.size(),c=m[0].size(),l=0,h=r*c-1,mid,val;
+    while(l<=h){
+        mid=(l+h)/2;
+        val=m[mid/c][mid%c];
+        if(val==t) return true;
+        else if(val<t) l=mid+1;
+        else h=mid-1;
+    }
+    return false;
+}
+```
+Search in a row and column wise sorted matrix
+```
+bool searchMatrix(vector<vector<int>>& matrix, int target) {
+    int r=matrix.size(),c=matrix[0].size();
+    int i=r-1,j=0;
+    while(i>=0 && j<c){
+        if(matrix[i][j]==target) return true;
+        else if(matrix[i][j]<target) j++;
+        else i--;
+    }
+    return false;
+}
+```
+Find Peak Element (2D Matrix)
+```
+```
+Matrix Median
+```
+```
+
+# Strings
+
+Remove Outermost Parentheses
+```
+string removeOuterParentheses(string s) {
+    int c=0;
+    string a;
+    for(auto it:s){
+        it=='('?c++:c--; 
+        if((it!='(' || c!=1) && (it!=')' || c!=0)) a+=it;
+    }
+    return a;
+}
+```
+Reverse Words in a String
+```
+string reverseWords(string s) {
+    string t,a;
+    for(auto it:s){
+        if(it==' ') {if(t.size()) a=t+" "+a, t="";}
+        else t+=it;
+    }
+    if(t.size()) a=t+" "+a;
+    a.pop_back();
+    return a;
+}
+```
+Isomorphic String
+```
+bool isIsomorphic(string s, string t) {
+    unordered_map<char,char> mp1,mp2;
+    for(int i=0;i<s.size();i++){
+        if(mp1.find(t[i])!=mp1.end()) if(mp1[t[i]]!=s[i]) return false;
+        if(mp2.find(s[i])!=mp2.end()) if(mp2[s[i]]!=t[i]) return false;
+        mp1[t[i]]=s[i];
+        mp2[s[i]]=t[i];
+    }
+    return true;
+}
+```
+One string is a rotation of another
+```
+```
+Valid Anagram
+```
+bool isAnagram(string s, string t) {
+    int freq[26]={0},c=0;
+    for(int i=0;i<s.size();i++){
+        freq[s[i]-'a']++;
+        c++;
+    }
+    for(int i=0;i<t.size();i++){
+        freq[t[i]-'a']--;
+        if(freq[t[i]-'a']>=0) c--;
+        else return false;
+    }
+    if(c) return false;
+    return true;
+}
+```
+Sort Characters By Frequency
+```
+static bool comp(pair<int,char> a,pair<int,char> b){
+    if(a.first>b.first) return true;
+    return false;
+}
+
+string frequencySort(string s) {
+    unordered_map<char,int> mp;
+    for(auto it:s) mp[it]++;
+    vector<pair<int,char>> v;
+    for(auto it:mp) v.push_back({it.second,it.first});
+    sort(v.begin(),v.end(),comp);
+    string a;
+    for(int i=0;i<v.size();i++){
+        while(v[i].first--) a+=v[i].second;
+    }
+    return a;
+}
+```
+Max Nesting Depth of the Parentheses
+```
+int maxDepth(string s) {
+    int c=0,a=0;
+    for(auto it:s){
+        if(it=='(') c++;
+        if(it==')') c--;
+        a=max(a,c);
+    }
+    return a;
+}
+```
+Roman to Integer
+```
+int r2n(char c){
+    int x;
+    c=='I'? x=1:c=='V'?x=5:c=='X'?x=10:c=='L'x=50:c=='C'?x=100:c=='D'?x=500:c=='M'?x=1000:x=0;
+    return x;
+}
+
+int romanToInt(string s) {
+    int x,y,sum=0,i;
+    for (i=0; i<s.size(); i++) {
+        x=r2n(s[i]);
+        i!=s.size()-1?y=r2n(s[i+1]):y=0;
+        if(x>=y) sum+=x;
+        else{
+            sum+=(y-x);
+            i++;
+        }
+    }
+    return sum;
+}
+```
+Integer to Roman
+```
+string intToRoman(int num) {
+    string ans="";
+    int i=0;
+    vector<int> nums={1000,900,500,400,100,90,50,40,10,9,5,4,1};
+    vector<string> roman={"M","CM","D","CD","C","XC","L","XL","X","IX","V","IV","I"};
+    while(num){
+        if(num>=nums[i]){
+            ans=ans+roman[i];
+            num=num-nums[i];
+        } 
+        else{
+            i++;
+        }
+    }
+    return ans;
+}
+```
+String to Integer
+```
+int myAtoi(string s) {
+    int i=0,flag=1;
+    int n=s.size();
+    if(n==0) return 0;
+    while(i<n && s[i]==' ') i++;
+    if(i==n) return 0;
+    if(s[i]=='-') flag=-1, i++;
+    else if(s[i]=='+') i++;
+    long int res=0;
+    while(s[i]>='0' && s[i]<='9'){
+        res=res*10;
+        if(res>=INT_MAX || res<=INT_MIN) break;
+        res=res+(s[i]-'0');
+        i++;
+    }
+    if(flag==-1) res=res*flag;
+    if(res<=INT_MIN) return INT_MIN;
+    if(res>=INT_MAX) return INT_MAX;
+    return res;
+}
+```
+Count Number of Substrings
+```
+```
+Longest Palindromic Substring
+```
+string longestPalindrome(string s) {
+    vector<vector<bool>> dp(s.size(),vector<bool>(s.size(),false));
+    int l=0,r=0;
+    for(int i=0;i<s.size();i++){
+        for(int j=0;j<s.size()-i;j++){
+            if(i==0) dp[j][j]=true;
+            else if(i==1 && s[j]==s[j+1]) dp[j][j+1]=true, l=j, r=j+i;
+            else if(s[j]==s[j+i] && dp[j+1][j+i-1]){ dp[j][j+i]=true; if(i+1>r-l+1) l=j, r=j+i;}
+        }
+    }
+    return s.substr(l,r-l+1);
+}
+```
+Sum of Beauty of All Substrings
+
+```
+int beautySum(string s) {
+    if(s.size()<3) return 0;
+    vector<vector<int>> v(26,vector<int>(s.size()));
+    v[s[0]-'a'][0]=1;
+    for(int j=1;j<s.size();j++){
+        for(int i=0;i<26;i++) v[i][j]=v[i][j-1];
+        v[s[j]-'a'][j]++;
+    }
+
+    int a=0,mi,ma;
+    for(int i=0;i<s.size()-2;i++){
+        for(int j=i+2;j<s.size();j++){
+            mi=501,ma=0;
+            for(int k=0;k<26;k++){
+                if(!v[k][j] || (i>0 && !(v[k][j]-v[k][i-1]))) continue;
+                i==0?mi=min(mi,v[k][j]):mi=min(mi,v[k][j]-v[k][i-1]);
+                i==0?ma=max(ma,v[k][j]):ma=max(ma,v[k][j]-v[k][i-1]);
+            }
+            a+=(ma-mi);
+        }
+    }
+    return a;
+}
+```
