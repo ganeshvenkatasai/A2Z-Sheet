@@ -1167,6 +1167,129 @@ int beautySum(string s) {
 
 # Graph
 
+BFS
+```
+vector<int> bfsOfGraph(int V, vector<int> adj[]) {
+    queue<int> q;
+    q.push(0);
+    vector<bool> vis(V,false);
+    vis[0]=true;
+    vector<int>ans;
+    while(!q.empty()){
+        int x=q.front();
+        ans.push_back(x);
+        q.pop();
+        for(auto it:adj[x]){
+            if(!vis[it]){
+                vis[it]=true;
+                q.push(it);
+            }
+        }
+    }
+    return ans;
+}
+```
+DFS
+```
+void dfs(int node,vector<int> &ans,vector<bool> &vis, vector<int> g[]){
+    if(!vis[node]){
+        ans.push_back(node);
+        vis[node]=true;
+        for(auto it:g[node]){
+            dfs(it,ans,vis,g);
+        }
+    }
+}
+    
+vector<int> dfsOfGraph(int V, vector<int> adj[]) {
+    vector<int> ans;
+    vector<bool> vis(V,false);
+    dfs(0,ans,vis,adj);
+    return ans;
+}
+```
+Number of Provinces
+```
+void f(int node,int n,vector<vector<int>>& g,vector<bool> &vis){
+    vis[node]=true;
+    for(int i=0;i<n;i++){
+        if(g[node][i]==1 && !vis[i]){
+            f(i,n,g,vis);
+        }
+    }
+}
+
+int findCircleNum(vector<vector<int>>& g) {
+    int n=g.size(),count=0;
+    vector<bool> vis(n,false);
+    for(int i=0;i<n;i++){
+        if(!vis[i]){
+            f(i,n,g,vis);
+            count++;
+        }
+    }
+    return count;
+}
+```
+Connected Components in Matrix
+```
+```
+Rotting Oranges
+```
+int orangesRotting(vector<vector<int>>& grid) {
+    queue<pair<int,int>> q;
+    int tot=0,cnt=0,ans=0;
+    for(int i=0;i<grid.size();i++){
+        for(int j=0;j<grid[0].size();j++){
+            if(grid[i][j]!=0) tot++;
+            if(grid[i][j]==2) q.push({i,j});
+        }
+    }
+    int dx[]={0,0,1,-1};
+    int dy[]={1,-1,0,0};
+    while(!q.empty()){
+        int sz=q.size();
+        cnt+=sz;
+        while(sz--){
+            int x=q.front().first;
+            int y=q.front().second;
+            q.pop();
+            for(int i=0;i<4;i++){
+                int nx=x+dx[i];
+                int ny=y+dy[i];
+                if(nx>=0 && ny>=0 && nx<grid.size() && ny<grid[0].size() && grid[nx][ny]==1){
+                    grid[nx][ny]=2;
+                    q.push({nx,ny});
+                } 
+            }
+        }
+        if(!q.empty()) ans++;
+    }
+    if(tot==cnt) return ans;
+    else return -1;
+}
+```
+Flood fill
+```
+void dfs(vector<vector<int>>& m, int i, int j,int p, int n){
+    if(i>=0 && i<m.size() && j>=0 && j<m[0].size() && m[i][j]==p){
+        m[i][j]=n;
+        int x[4]={0,0,1,-1};
+        int y[4]={1,-1,0,0};
+        for(int k=0;k<4;k++) dfs(m,i+x[k],j+y[k],p,n);
+    }
+    return;
+}
+
+vector<vector<int>> floodFill(vector<vector<int>>& m, int i, int j, int new_color) {
+    int prev_color=m[i][j];
+    if(prev_color == new_color) return m;
+    dfs(m,i,j,prev_color,new_color);
+    return m;
+}
+```
+
+
 # Dynamic Programming
 
 # Trie
