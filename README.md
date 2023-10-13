@@ -946,7 +946,7 @@ Matrix Median
 ```
 ```
 
-# Strings
+# String
 
 Remove Outermost Parentheses
 ```
@@ -1147,3 +1147,26 @@ int beautySum(string s) {
     return a;
 }
 ```
+# Linked List
+
+# Recursion
+
+# Bit Manipulation
+
+# Stack and Queue
+
+# Sliding Window and Two Pointer
+
+# Heap
+
+# Greedy
+
+# Binary Tree 
+
+# Binary Search Tree
+
+# Graph
+
+# Dynamic Programming
+
+# Trie
