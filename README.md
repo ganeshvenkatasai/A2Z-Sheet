@@ -1147,7 +1147,395 @@ int beautySum(string s) {
     return a;
 }
 ```
+Minimum number of bracket reversals				
+```
+```
+Count and say							
+```
+```
+Rabin Karp				
+```
+```
+Z-Function				
+```
+```
+KMP algo / LPS(pi) array				
+```
+```
+Shortest Palindrome				
+```
+```
+Longest happy prefix				
+```
+```
+Count palindromic subsequence 
+```
+```
+
 # Linked List
+
+Reverse LL 
+```
+ListNode* reverseList(ListNode* head) {
+    if(!head) return NULL;
+    if(!head->next) return head;
+    ListNode *cur=head,*prv=NULL, *nxt;
+    while(cur){
+        nxt=cur->next;
+        cur->next=prv;
+        prv=cur;
+        cur=nxt;
+    }
+    return prv;
+}
+```
+```
+ListNode* f(ListNode* head,ListNode* prev){
+    if(!head) return prev;
+    ListNode* temp=head->next;
+    head->next=prev;
+    return f(temp,head);
+}
+
+ListNode* reverseList(ListNode* head) {
+    ListNode* prev=NULL;
+    return f(head,prev);
+}
+```
+Reverse DLL 
+```
+void reverse(node*&head) {
+    node*temp = NULL;
+    node*curr = head;
+    while (curr != NULL)
+    {
+        temp = curr->prev;
+        curr->prev = curr->next;
+        curr->next = temp;          
+        curr = curr->prev;
+    }
+    if(temp != NULL ) head = temp->prev;
+}
+```
+Middle of the Linked List
+```
+ListNode* middleNode(ListNode* h) {
+    if(!h->next) return h;
+    ListNode *s=h,*f=h;
+    while(f && f->next){
+        s=s->next;
+        f=f->next->next;
+    }
+    return s;
+}
+```
+Linked List Cycle
+```
+bool hasCycle(ListNode *head) {
+    ListNode *s=head,*f=head;
+    while(f && f->next){
+        s=s->next;
+        f=f->next->next;
+        if(s==f) return true;
+    }
+    return false;
+}
+```
+Starting point in Linked List Cycle
+```
+ListNode *detectCycle(ListNode *head) {
+    if(!head) return head;
+    if(!head->next) return NULL;
+    if(head->next==head) return head;
+    ListNode *s=head,*f=head;
+    while(f && f->next){
+        s=s->next;
+        f=f->next->next;
+        if(s==f) break;
+    }
+    if(!f || !f->next) return NULL;
+    s=head;
+    while(s!=f){
+        s=s->next;
+        f=f->next;
+    }
+    return s;
+}
+```
+Length of Loop in LL
+```
+int lengthOfLoop(Node *head) {
+    if(!head) return 0;
+    if(!head->next) return 0;
+    if(head->next==head) return 1;
+    Node *s=head,*f=head;
+    while(f && f->next){
+        s=s->next;
+        f=f->next->next;
+        if(s==f) break;
+    }
+    if(!f || !f->next) return 0;
+    int c=1;
+    f=s->next;
+    while(s!=f){
+        c++;
+        f=f->next;
+    }
+    return c;
+}
+```
+Palindrome 
+```
+ListNode* reverseiteration(ListNode* head){
+    ListNode *curr=head,*prev=NULL,*nextptr=NULL;
+    while(curr){
+        nextptr=curr->next;
+        curr->next=prev;
+        prev=curr;
+        curr=nextptr;
+    }
+    return prev;
+} 
+
+bool isPalindrome(ListNode* head) {
+    ListNode *s=head,*f=head;
+    while(f && f->next){
+        s=s->next;
+        f=f->next->next;
+    }
+    if(f) s=s->next;
+    ListNode *temp=reverseiteration(s);
+    while(temp){
+        if(temp->val!=head->val) return false;
+        temp=temp->next;
+        head=head->next;
+    }
+    return true;
+}
+```
+Segrregate Odd Even
+```
+ListNode* oddEvenList(ListNode* head) {
+    if(!head || !head->next || !head->next->next) return head;
+    ListNode* one=head,*two=head->next,*d=head->next->next,*t1=head,*t2=head->next;
+    while(d){
+        t1->next=d;
+        t1=d;
+        d=d->next;
+        t2->next=d;
+        t2=d;
+        if(d) d=d->next;
+    }
+    t1->next=two;
+    if(t2) t2->next=NULL;
+    return one;
+}
+```
+Remove Nth node from back
+```
+ListNode* removeNthFromEnd(ListNode* head, int n) {
+    if(!head || !head->next) return NULL;
+    ListNode* t=head;
+    int count=0;
+    while(t){
+        count++;
+        t=t->next;
+    }
+    if(count==n) return head->next;
+    t=head;
+    n=count-n;
+    while(--n) t=t->next;
+    if(t->next) t->next=t->next->next;
+    return head;
+}
+```
+Delete the Middle Node
+```
+ListNode* deleteMiddle(ListNode* head) {
+    if(!head || !head->next) return NULL;
+    ListNode *s=head,*f=head,*prv;
+    while(f &&f->next){
+        prv=s;
+        s=s->next;
+        f=f->next->next;
+    }
+    prv->next=prv->next->next;
+    return head;
+}
+```
+Sort 
+```
+ListNode* sortList(ListNode* head) {
+    priority_queue<pair<int,ListNode *>,vector<pair<int,ListNode *>>,greater<pair<int,ListNode *>>> pq;
+    ListNode *temp=new ListNode();
+    while(head){
+        pq.push({head->val,head});
+        head=head->next;
+    }
+    head=temp;
+    while(!pq.empty()){
+        temp->next=pq.top().second;
+        pq.pop();
+        temp=temp->next;
+    }
+    temp->next=NULL;
+    return head->next;
+}
+```
+Sort a LL of 0's 1's and 2's
+```
+```
+Intersection of Two Linked Lists
+```
+ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+    ListNode *temp=headA;
+    while(temp->next){
+        temp=temp->next;
+    }
+    temp->next=headA;
+    
+    ListNode *s=headB,*f=headB;
+    while(f && f->next){
+        s=s->next;
+        f=f->next->next;
+        if(s==f) break;
+    }
+
+    if(!f || !f->next) {
+        temp->next=NULL;
+        return NULL;
+    }
+    f=headB;
+    while(s!=f){
+        s=s->next;
+        f=f->next;
+    }
+    temp->next=NULL;
+    return s;
+}
+```
+Add 1 to LL 
+```
+int f(Node *cur) {
+    if(!cur) return 1;
+    int sum=f(cur->next)+cur->data;
+    cur->data=sum%10;
+    return sum/10;
+}
+
+Node* addOne(Node *head) {
+    Node *temp=head;
+    int carry=f(head);
+    if(carry){
+        temp=new Node(1);
+        temp->next=head;
+    }
+    return temp;
+}
+```
+Add 2 numbers in LL
+```
+ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+    int k;
+    ListNode* d=new ListNode();
+    ListNode* ans=d;
+    ListNode* prev=NULL;
+    int c=0,sum=0;
+    while(l1 && l2){
+        sum=(l1->val+l2->val+c)%10;
+        c=(l1->val+l2->val+c)/10;
+        d->next=new ListNode(sum);
+        l1=l1->next;
+        l2=l2->next;
+        d=d->next;
+        prev=d;
+    }
+    if(l2){
+        d->next=l2;
+        while(l2){
+            k=l2->val;
+            l2->val=(l2->val+c)%10;
+            c=(k+c)/10;
+            prev=l2;
+            l2=l2->next;
+        }
+    }
+    else if(l1){
+        d->next=l1;
+        while(l1){
+            k=l1->val;
+            l1->val=(l1->val+c)%10;
+            c=(k+c)/10;
+            prev=l1;
+            l1=l1->next;
+        }
+    } 
+    if(c) prev->next=new ListNode(1);
+    return ans->next;
+}
+```
+Delete all occurrences of a key in DLL
+```
+```
+Find pairs with given sum in DLL
+```
+```
+Remove duplicates from sorted DLL
+```
+```
+Reverse LL in group of given size K
+```
+```
+Rotate a LL
+```
+ListNode* rotateRight(ListNode* head, int k) {
+    if(head==NULL) return head;
+    if(head->next==NULL) return head;
+    int count=0;
+    ListNode* temp=head,*temp2;
+    while(temp!=NULL){
+        count++;
+        temp=temp->next;
+    }
+    k=k%count;
+    k=count-k;
+    temp=head;
+    if(k==0) return head;
+    while(--k){
+        temp=temp->next; 
+    }
+    temp2=temp;
+    while(temp->next!=NULL){
+            temp=temp->next;
+    }
+    temp->next=head;
+    head=temp2->next;
+    temp2->next=NULL;
+    return head;
+}
+```
+Flattening of LL
+```
+```
+Clone LL with Random Pointer
+```
+Node* copyRandomList(Node* head) {
+    unordered_map<Node*,Node*> mp;
+    Node* temp=head;
+    while(temp){
+        mp[temp]=new Node(temp->val);
+        temp=temp->next;
+    }
+    temp=head;
+    while(temp){
+        mp[temp]->next=mp[temp->next];
+        mp[temp]->random=mp[temp->random];
+        temp=temp->next;
+    }
+    return mp[head];
+}
+```
+
 
 # Recursion
 
@@ -1163,7 +1551,662 @@ int beautySum(string s) {
 
 # Binary Tree 
 
+Preorder Traversal
+```
+void preOrderTrav(node * curr, vector < int > & preOrder) {
+  if (curr == NULL) return;
+  preOrder.push_back(curr -> data);
+  preOrderTrav(curr -> left, preOrder);
+  preOrderTrav(curr -> right, preOrder);
+}
+```
+Inorder Traversal
+```
+void inOrderTrav(node * curr, vector < int > & inOrder) {
+  if (curr == NULL) return;
+  inOrderTrav(curr -> left, inOrder);
+  inOrder.push_back(curr -> data);
+  inOrderTrav(curr -> right, inOrder);
+}
+```
+
+Postorder Traversal
+```
+void postOrderTrav(node * curr, vector < int > & postOrder) {
+  if (curr == NULL) return;
+  postOrderTrav(curr -> left, postOrder);
+  postOrderTrav(curr -> right, postOrder);
+  postOrder.push_back(curr -> data);
+}
+```
+Level Order Traversal
+```
+vector<int> levelOrder(TreeNode* root) {
+    vector<int> ans; 
+    if(root == NULL) return ans; 
+    queue<TreeNode*> q; 
+    q.push(root); 
+    while(!q.empty()) {
+        TreeNode *temp = q.front(); 
+        q.pop(); 
+        if(temp->left != NULL) q.push(temp->left); 
+        if(temp->right != NULL) q.push(temp->right); 
+        ans.push_back(temp->val); 
+    }
+    return ans; 
+}
+```
+Preorder Traversal (Iterative)
+```
+vector<int> preOrderTrav(node* curr) {
+    vector<int> preOrder;
+    if (curr == NULL) return preOrder;
+    stack<node*> s;
+    s.push(curr);
+    while (!s.empty()) {
+        node * topNode = s.top();
+        preOrder.push_back(topNode -> data);
+        s.pop();
+        if (topNode -> right != NULL) s.push(topNode -> right);
+        if (topNode -> left != NULL) s.push(topNode -> left);
+    }
+    return preOrder;
+}
+```
+Inorder Traversal (Iterative)
+```
+vector<int> inOrderTrav(node* curr) {
+    vector<int> inOrder;
+    stack<node*> s;
+    while (true) {
+        if (curr != NULL) {
+            s.push(curr);
+            curr = curr -> left;
+        } 
+        else {
+            if (s.empty()) break;
+            curr = s.top();
+            inOrder.push_back(curr -> data);
+            s.pop();
+            curr = curr -> right;
+        }
+    }
+    return inOrder;
+}
+```
+Postorder Traversal (Iterative Two Stacks)
+```
+vector<int> postOrderTrav(node* curr) {
+    vector<int> postOrder;
+    if (curr == NULL) return postOrder;
+    stack<node*> s1;
+    stack<node*> s2;
+    s1.push(curr);
+    while (!s1.empty()) {
+        curr = s1.top();
+        s1.pop();
+        s2.push(curr);
+        if (curr -> left != NULL) s1.push(curr -> left);
+        if (curr -> right != NULL) s1.push(curr -> right);
+    }
+    while (!s2.empty()) {
+        postOrder.push_back(s2.top() -> data);
+        s2.pop();
+    }
+    return postOrder;
+}
+```
+Postorder Traversal (Iterative Single Stack)
+```
+vector<int> postOrderTrav(node* cur) {
+    vector<int> postOrder;
+    if (cur == NULL) return postOrder;
+    stack<node*> st;
+    while (cur != NULL || !st.empty()) {
+        if (cur != NULL) {
+            st.push(cur);
+            cur = cur -> left;
+        } 
+        else {
+            node * temp = st.top() -> right;
+            if (temp == NULL) {
+                temp = st.top();
+                st.pop();
+                postOrder.push_back(temp -> data);
+                while (!st.empty() && temp == st.top() -> right) {
+                    temp = st.top();
+                    st.pop();
+                    postOrder.push_back(temp -> data);
+                }
+            } 
+            else cur = temp;
+        }
+    }
+    return postOrder;
+}
+```
+All Traversals in One
+```
+void allTraversal(node* root, vector<int> &pre, vector<int> &in , vector<int> &post) {
+    stack<pair<node*,int>> st;
+    st.push({root,1});
+    if (root == NULL) return;
+    while (!st.empty()) {
+        auto it = st.top();
+        st.pop();
+        if (it.second == 1) {
+            pre.push_back(it.first -> data);
+            it.second++;
+            st.push(it);
+            if (it.first -> left != NULL) st.push({it.first -> left,1});
+        }
+        else if (it.second == 2) {
+            in .push_back(it.first -> data);
+            it.second++;
+            st.push(it);
+            if (it.first -> right != NULL) st.push({it.first -> right,1});
+        }
+        else {
+            post.push_back(it.first -> data);
+        }
+    }
+}
+```
+Maximum Depth of Binary Tree
+```
+int maxDepth(TreeNode* root) {
+    if(!root) return 0;
+    return 1+max(maxDepth(root->left),maxDepth(root->right));
+}
+```
+Balanced Binary Tree
+```
+int f(TreeNode* root){
+    if(!root) return 0;
+    int l=f(root->left);
+    if(l==-1) return -1;
+    int r=f(root->right);
+    if(r==-1) return -1;
+    if(abs(l-r)>1) return -1;
+    return 1+max(l,r);
+}
+bool isBalanced(TreeNode* root) {
+    return f(root)!=-1;
+}
+```
+Diameter of Binary Tree
+```
+int f(TreeNode* root,int &ans){
+    if(!root) return 0;
+    int l=f(root->left,ans);
+    int r=f(root->right,ans);
+    ans=max(ans,l+r);
+    return 1+max(l,r);
+}
+
+int diameterOfBinaryTree(TreeNode* root) {
+    int ans=0;
+    f(root,ans);
+    return ans;
+}
+```
+Maximum Path Sum
+```
+int f(TreeNode* root,int &ans){
+    if(!root) return INT_MIN;
+    int l=f(root->left,ans);
+    if(l<0) l=0;
+    int r=f(root->right,ans);
+    if(r<0) r=0;
+    ans=max(ans,root->val+l+r);
+    return root->val+max(l,r);
+}
+    
+int maxPathSum(TreeNode* root) {
+    int ans=INT_MIN;
+    f(root,ans);
+    return ans;
+}
+```
+Trees are identical or not 
+```
+bool f(TreeNode* p, TreeNode* q){
+    if(!p && !q) return true;
+    if(!p || !q) return false;
+    if(p->val!=q->val) return false;
+    return f(p->left,q->left) && f(p->right,q->right);
+}
+
+bool isSameTree(TreeNode* p, TreeNode* q) {
+    return f(p,q);
+}
+```
+Zigzag Level Order Traversal
+```
+vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+    queue<TreeNode*> q;
+    q.push(root);
+    vector<vector<int>> res;
+    if(!root) return res;
+    int flag=0;
+    while(!q.empty()){
+        int sz=q.size();
+        vector<int> level;
+        while(sz--){
+            TreeNode* x=q.front();
+            q.pop();
+            level.push_back(x->val);
+            if(x->left) q.push(x->left);
+            if(x->right) q.push(x->right);
+        }
+        if(flag) reverse(level.begin(),level.end());
+        flag=~flag;
+        res.push_back(level);
+    }
+    return res;
+}
+```
+Boundary Traversal
+```
+bool isLeaf(node * root) {
+    return !root -> left && !root -> right;
+}
+
+void addLeftBoundary(node * root, vector < int > & res) {
+    node * cur = root -> left;
+    while (cur) {
+        if (!isLeaf(cur)) res.push_back(cur -> data);
+        if (cur -> left) cur = cur -> left;
+        else cur = cur -> right;
+    }
+}
+
+void addRightBoundary(node * root, vector < int > & res) {
+    node * cur = root -> right;
+    vector < int > tmp;
+    while (cur) {
+        if (!isLeaf(cur)) tmp.push_back(cur -> data);
+        if (cur -> right) cur = cur -> right;
+        else cur = cur -> left;
+    }
+    for (int i = tmp.size() - 1; i >= 0; --i) {
+        res.push_back(tmp[i]);
+    }
+}
+
+void addLeaves(node * root, vector < int > & res) {
+    if (isLeaf(root)) {
+        res.push_back(root -> data);
+        return;
+    }
+    if (root -> left) addLeaves(root -> left, res);
+    if (root -> right) addLeaves(root -> right, res);
+}
+
+vector<int> printBoundary(node* root) {
+    vector<int> res;
+    if (!root) return res;
+    if (!isLeaf(root)) res.push_back(root -> data);
+    addLeftBoundary(root, res);
+    addLeaves(root, res);
+    addRightBoundary(root, res);
+    return res;
+}
+```
+Vertical Order Traversal
+```
+vector<vector<int>> verticalTraversal(TreeNode* root) {
+    queue<pair<TreeNode*,pair<int,int>>> q;
+    q.push({root,{0,0}});
+    map<int,map<int,multiset<int>>> mp;
+    int x,y;
+    while(!q.empty()){
+        TreeNode* node =q.front().first;
+        x=q.front().second.first;
+        y=q.front().second.second;
+        q.pop();
+        mp[x][y].insert(node->val);
+        if(node->left){
+            q.push({node->left,{x-1,y+1}});
+        }
+        if(node->right){
+            q.push({node->right,{x+1,y+1}});
+        }
+    }
+    vector<vector<int>> ans;
+    for(auto i:mp){
+        vector<int> level;
+        for(auto j:i.second){
+            level.insert(level.end(), j.second.begin(), j.second.end());
+        }
+        ans.push_back(level);
+    }
+    return ans;
+}
+```
+Top View
+```
+vector<int> topView(Node *root) {
+    map<int,int> mp;
+    vector <int> res;
+    if(!root) return res;
+    queue<pair<Node *,int>> q;
+    q.push({root,0});
+    while(!q.empty()){
+        Node *x=q.front().first;
+        int h=q.front().second;
+        if(mp.find(h)==mp.end()) mp[h]=x->data;
+        q.pop();
+        if(x->left) q.push({x->left,h-1});
+        if(x->right) q.push({x->right,h+1});
+    }
+    for(auto it:mp) res.push_back(it.second);
+    return res;
+}
+```
+Bottom View
+```
+vector <int> bottomView(Node *root) {
+    vector <int> res;
+    if(!root) return res;
+    map<int,int> mp;
+    queue<pair<Node *,int>> q;
+    q.push({root,0});
+    while(!q.empty()){
+        Node *x=q.front().first;
+        int h=q.front().second;
+        mp[h]=x->data;
+        q.pop();
+        if(x->left) q.push({x->left,h-1});
+        if(x->right) q.push({x->right,h+1});
+    }
+    for(auto it:mp) res.push_back(it.second);
+    return res;
+}
+```
+Left View
+```
+vector<int> rightSideView(TreeNode* root) {
+    vector<int> res;
+    if(!root) return res;
+    queue<TreeNode *> q;
+    q.push(root);
+    while(!q.empty()){
+        res.push_back(q.front()->val);
+        int sz=q.size();
+        while(sz--){
+            TreeNode* x=q.front();
+            q.pop();
+            if(x->left) q.push(x->left);
+            if(x->right) q.push(x->right);
+        } 
+    }
+    return res;
+}
+```
+Right View
+```
+vector<int> rightSideView(TreeNode* root) {
+    vector<int> res;
+    if(!root) return res;
+    queue<TreeNode *> q;
+    q.push(root);
+    while(!q.empty()){
+        res.push_back(q.front()->val);
+        int sz=q.size();
+        while(sz--){
+            TreeNode* x=q.front();
+            q.pop();
+            if(x->right) q.push(x->right);
+            if(x->left) q.push(x->left);
+        } 
+    }
+    return res;
+}
+```
+Symmetric Binary Tree
+```
+bool f(TreeNode* p,TreeNode* q){
+    if(!p && !q) return true;
+    if(!p || !q) return false;
+    if(p->val!=q->val) return false;
+    bool l=f(p->left,q->right);
+    bool r=f(p->right,q->left);
+    return l && r;
+}
+
+bool isSymmetric(TreeNode* root) {
+    return f(root,root);
+}
+```
+Print Root to Node Path
+```
+bool getPath(node * root, vector < int > & arr, int x) {
+    if (!root) return false;
+    arr.push_back(root -> data);
+    if (root -> data == x) return true;
+    if (getPath(root -> left, arr, x) || getPath(root -> right, arr, x)) return true; 
+    arr.pop_back();
+    return false;
+}
+```
+Lowest Common Ancestor
+```
+TreeNode* f(TreeNode* root, TreeNode* p, TreeNode* q){
+    if(!root) return NULL;
+    if(root==p || root==q) return root;
+    TreeNode* l=f(root->left,p,q);
+    TreeNode* r=f(root->right,p,q);
+    if(l && r) return root;
+    return l?l:r;
+}
+
+TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+    return f(root,p,q);
+}
+```
+Maximum Width
+```
+```
+Children Sum Property
+```
+bool isParentSum(Node *root){
+    if(!root || (!root->left && !root->right)) return true;
+    int l=0,r=0;
+    if(root->left) l=root->left->data;
+    if(root->right) r=root->right->data;
+    if(root->data != l+r) return false;
+    if(!isParentSum(root->left)) return false;
+    if(!isParentSum(root->right)) return false;
+    return true;
+}
+```
+All Nodes Distance K
+```
+```
+Minimum time taken to BURN
+```
+```
+Count Nodes in Complete Binary Tree
+```
+```
+Construct Binary Tree from Inorder and Preorder
+```
+```
+Construct Binary Tree from Inorder and PostOrder
+```
+```
+Serialize And Deserialize a Binary Tree
+```
+```
+Flatten Binary Tree to LinkedList
+```
+void f(TreeNode* root,TreeNode* &prev){
+    if(!root) return;
+    if(prev){
+        prev->right=root;
+        prev->left=NULL;
+    }
+    prev=root;
+    f(root->left,prev);
+    f(root->right,prev);
+}
+
+void flatten(TreeNode* root) {
+    TreeNode *prev=NULL;
+    f(root,prev);
+}
+```
+
+
 # Binary Search Tree
+
+Search
+```
+TreeNode* searchBST(TreeNode* root, int t) {
+    if(!root) return NULL;
+    TreeNode* l;
+    if(root->val==t) return root;
+    else if(root->val<t) l=searchBST(root->right,t);
+    else if(root->val>t) l=searchBST(root->left,t);
+    return l;
+}
+```
+Ceil 
+```
+int findCeil(node *root, int input) {
+    int ceil = -1;
+    while (root) {
+        if (root->data == input) return input;
+        else if (root->data < input) root = root->right;
+        else {
+            ceil = root->data;
+            root = root->left;
+        }
+    }
+    return ceil;
+}
+```
+Floor 
+```
+int findFloor(node *root, int input) {
+    int floor = -1;
+    while (root) {
+        if (root->data == input) return input;
+        else if (root->data < input)
+        {
+            floor = root->data;
+            root = root->right;
+        }
+        else root = root->left;
+    }
+    return floor;
+}
+```
+Insert 
+```
+TreeNode* insertIntoBST(TreeNode* root, int val) {
+    TreeNode* node=new TreeNode(val);
+    if(!root) return node;
+    TreeNode *temp=root, *prev=NULL;
+    while(temp){
+        prev=temp;
+        if(temp->val<val) temp=temp->right;
+        else temp=temp->left;
+    }
+    if(prev->val<val) prev->right=node;
+    else prev->left=node;
+    return root;
+}
+```
+Delete 
+```
+```
+K-th Smallest
+```
+void f(TreeNode* root,int &k,int &ans){
+    if(!root) return;
+    f(root->left,k,ans);
+    k--;
+    if(k==0){
+        ans=root->val;
+        return;
+    }
+    f(root->right,k,ans);
+}
+
+int kthSmallest(TreeNode* root, int k) {
+    int ans=0;
+    f(root,k,ans);
+    return ans;
+}
+```
+K-th Largest
+```
+void f(TreeNode* root,int &k,int &ans){
+    if(!root) return;
+    f(root->right,k,ans);
+    k--;
+    if(k==0){
+        ans=root->val;
+        return;
+    }
+    f(root->left,k,ans);
+}
+
+int kthSmallest(TreeNode* root, int k) {
+    int ans=0;
+    f(root,k,ans);
+    return ans;
+}
+```
+Validate BST
+```
+bool f(TreeNode* root,TreeNode* &prev){
+    if(!root) return true;
+    if(!f(root->left,prev)) return false;
+    if(prev) if(prev->val>=root->val) return false;
+    prev=root;
+    if(!f(root->right,prev)) return false;
+    return true;
+}
+
+bool isValidBST(TreeNode* root) {
+    TreeNode* prev=NULL;
+    return f(root,prev);
+}
+```
+LCA 
+```
+TreeNode* lca(TreeNode* root, TreeNode* p, TreeNode* q){
+    if(root->val == p->val || root->val == q->val) return root;
+    else if((root->val > p->val && root->val < q->val) || (root->val < p->val && root->val > q->val)) return root;
+    else if(root->val < p->val && root->val < q->val) return lca(root->right,p,q);
+    else return lca(root->left,p,q);
+}
+```
+Construct BST from Preorder Traversal
+```
+```
+Inorder Successor in BST
+```
+```
+Inorder Predecessor in BST
+```
+```
+Merge 2 BST's
+```
+```
+Two Sum In BST
+```
+```
+Recover BST
+```
+```
+Largest BST in Binary Tree
+```
+```
+
 
 # Graph
 
