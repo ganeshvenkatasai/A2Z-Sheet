@@ -1169,43 +1169,45 @@ int beautySum(string s) {
 
 BFS
 ```
-vector<int> bfsOfGraph(int V, vector<int> adj[]) {
-    queue<int> q;
-    q.push(0);
-    vector<bool> vis(V,false);
-    vis[0]=true;
-    vector<int>ans;
-    while(!q.empty()){
-        int x=q.front();
-        ans.push_back(x);
-        q.pop();
-        for(auto it:adj[x]){
-            if(!vis[it]){
-                vis[it]=true;
-                q.push(it);
+vector<int>bfsOfGraph(int V, vector<int> adj[]){
+    vector<int> bfs; 
+    vector<int> vis(V, 0); 
+    queue<int> q; 
+    q.push(0); 
+    vis[0] = 1; 
+    while(!q.empty()) {
+        int node = q.front();
+        q.pop(); 
+        bfs.push_back(node); 
+        for(auto it : adj[node]) {
+            if(!vis[it]) {
+                q.push(it); 
+                vis[it] = 1; 
             }
         }
     }
-    return ans;
+    return bfs; 
 }
 ```
 DFS
 ```
-void dfs(int node,vector<int> &ans,vector<bool> &vis, vector<int> g[]){
-    if(!vis[node]){
-        ans.push_back(node);
-        vis[node]=true;
-        for(auto it:g[node]){
-            dfs(it,ans,vis,g);
+void dfs(int node, vector<int> &vis, vector<int> adj[], vector<int> &storeDfs) {
+    storeDfs.push_back(node); 
+    vis[node] = 1; 
+    for(auto it : adj[node]) {
+        if(!vis[it]) {
+            dfs(it, vis, adj, storeDfs); 
         }
     }
 }
-    
-vector<int> dfsOfGraph(int V, vector<int> adj[]) {
-    vector<int> ans;
-    vector<bool> vis(V,false);
-    dfs(0,ans,vis,adj);
-    return ans;
+
+vector<int>dfsOfGraph(int V, vector<int> adj[]){
+    vector<int> storeDfs; 
+    vector<int> vis(V+1, 0); 
+    for(int i = 1;i<=V;i++) {
+        if(!vis[i]) dfs(i, vis, adj, storeDfs); 
+    }
+    return storeDfs; 
 }
 ```
 Number of Provinces
@@ -1286,6 +1288,1089 @@ vector<vector<int>> floodFill(vector<vector<int>>& m, int i, int j, int new_colo
     if(prev_color == new_color) return m;
     dfs(m,i,j,prev_color,new_color);
     return m;
+}
+```
+Cycle check Undirected Graph BFS
+```
+bool checkForCycle(int s, int V, vector<int> adj[], vector<int>& visited)
+{
+    vector<int> parent(V, -1);
+    queue<pair<int,int>> q;
+    visited[s] = true;
+    q.push({s, -1});
+    while (!q.empty()) {
+        int node = q.front().first;
+        int par = q.front().second;
+        q.pop();
+        for (auto it : adj[node]) {
+            if (!visited[it]) {
+                visited[it] = true;
+                q.push({it, node});
+            }
+            else if (par != it)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool isCycle(int V, vector<int>adj[]){
+    vector<int> vis(V, 0); 
+    for(int i = 0;i<V;i++) {
+        if(!vis[i]) {
+            if(checkForCycle(i, V, adj, vis)) return true; 
+        }
+    }
+    return false; 
+}
+```
+Cycle check Undirected Graph DFS
+```
+bool checkForCycle(int node, int parent, vector<int> &vis, vector<int> adj[]) {
+    vis[node] = 1; 
+    for(auto it: adj[node]) {
+        if(!vis[it]) {
+            if(checkForCycle(it, node, vis, adj)) 
+                return true; 
+        }
+        else if(it!=parent) 
+            return true; 
+    }
+    return false; 
+}
+
+bool isCycle(int V, vector<int>adj[]){
+    vector<int> vis(V+1, 0); 
+    for(int i = 0;i<V;i++) {
+        if(!vis[i]) {
+            if(checkForCycle(i, -1, vis, adj)) return true; 
+        }
+    }
+    return false; 
+}
+```
+Cycle check Directed Graph BFS
+```
+bool isCyclic(int N, vector<int> adj[]) {
+    queue<int> q; 
+    vector<int> indegree(N, 0); 
+    for(int i = 0;i<N;i++) {
+        for(auto it: adj[i]) {
+            indegree[it]++; 
+        }
+    }
+    for(int i = 0;i<N;i++) {
+        if(indegree[i] == 0) {
+            q.push(i); 
+        }
+    }
+    int cnt = 0;
+    while(!q.empty()) {
+        int node = q.front(); 
+        q.pop(); 
+        cnt++; 
+        for(auto it : adj[node]) {
+            indegree[it]--;
+            if(indegree[it] == 0) {
+                q.push(it); 
+            }
+        }
+    }
+    if(cnt == N) return false; 
+    return true; 
+}
+```
+Cycle check Directed Graph DFS
+```
+bool checkCycle(int node, vector<int> adj[], int vis[], int dfsVis[]) {
+    vis[node] = 1; 
+    dfsVis[node] = 1; 
+    for(auto it : adj[node]) {
+        if(!vis[it]) {
+            if(checkCycle(it, adj, vis, dfsVis)) return true;
+        } else if(dfsVis[it]) {
+            return true; 
+        }
+    }
+    dfsVis[node] = 0; 
+    return false;
+}
+
+bool isCyclic(int N, vector<int> adj[]) {
+    int vis[N], dfsVis[N]; 
+    memset(vis, 0, sizeof vis); 
+    memset(dfsVis, 0, sizeof dfsVis); 
+    for(int i = 0;i<N;i++) {
+        if(!vis[i]) {
+            if(checkCycle(i, adj, vis, dfsVis)) {
+                return true; 
+            }
+        }
+    }
+    return false; 
+}
+```
+0/1 Matrix
+```
+```
+Surrounded Regions
+```
+void f(int i,int j,vector<vector<char>>& board,int r,int c){
+    if(i<0 || i>=r || j<0 || j>=c || board[i][j]!='O'){
+        return;
+    }
+    if(board[i][j]=='O') board[i][j]='#';
+    f(i+1,j,board,r,c);
+    f(i-1,j,board,r,c);
+    f(i,j+1,board,r,c);
+    f(i,j-1,board,r,c);
+}
+
+void solve(vector<vector<char>>& board) {
+    int r=board.size();
+    int c=board[0].size();
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            if((i==0 || i==r-1 || j==0 || j==c-1) &&  board[i][j]=='O'){
+                f(i,j,board,r,c);
+            }
+        }
+    }
+        for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            if(board[i][j]=='#') board[i][j]='O';
+            else board[i][j]='X';
+        }
+    }   
+}
+```
+Number of Enclaves
+```
+void dfs(vector<vector<int>>& m,int i,int j){
+    if(i>=0 && i<m.size() && j>=0 && j<m[0].size() && m[i][j]==1){
+        m[i][j]=0;
+        int x[4]={0,0,1,-1};
+        int y[4]={1,-1,0,0};
+        for(int k=0;k<4;k++) dfs(m,i+x[k],j+y[k]);
+    }
+}
+
+int numEnclaves(vector<vector<int>>& m) {
+    int r=m.size(),c=m[0].size(),count=0;
+    for(int i=0;i<r;i++) for(int j=0;j<c;j++) if((i==0 || i==r-1 || j==0 || j==c-1) && m[i][j]==1) dfs(m,i,j);
+    for(int i=0;i<r;i++) for(int j=0;j<c;j++) if(m[i][j]) count++;
+    return count; 
+}
+```
+Word Ladder 1
+```
+int ladderLength(string s, string t, vector<string>& a) {
+    unordered_map<string,bool> mp;
+    for(int i=0;i<a.size();i++) mp[a[i]]=false; 
+    queue<string> q;
+    string temp;
+    int step=1;
+    q.push(s);
+    while(!q.empty()){
+        int sz=q.size();
+        while(sz--){
+            string x=q.front();
+            if(x==t) return step;
+            q.pop();
+            for(int i=0;i<x.size();i++){
+                for(char j='a';j<='z';j++){
+                    temp=x;
+                    temp[i]=j;
+                    if(mp.find(temp)!=mp.end() && !mp[temp]){
+                        mp[temp]=true;
+                        q.push(temp);
+                    }
+                }
+            }
+        }
+        step++;
+    }
+    return 0;
+}
+```
+Word Ladder 2
+```
+```
+Number of Islands 2
+```
+void bfs(int row, int col, vector<vector<int>> &vis, vector<vector<char>>&grid) {
+    vis[row][col] = 1; 
+    queue<pair<int,int>> q;
+    q.push({row, col}); 
+    int n = grid.size(); 
+    int m = grid[0].size(); 
+    while(!q.empty()) {
+        int row = q.front().first; 
+        int col = q.front().second; 
+        q.pop(); 
+        for(int delrow = -1; delrow<=1;delrow++) {
+            for(int delcol = -1; delcol <= 1; delcol++) {
+                int nrow = row + delrow; 
+                int ncol = col + delcol; 
+                if(nrow >= 0 && nrow < n && ncol >= 0 && ncol < m 
+                && grid[nrow][ncol] == '1' && !vis[nrow][ncol]) {
+                    vis[nrow][ncol] = 1; 
+                    q.push({nrow, ncol}); 
+                }
+            }
+        }
+    }
+}
+
+int numIslands(vector<vector<char>>& grid) {
+    int n = grid.size(); 
+    int m = grid[0].size(); 
+    vector<vector<int>> vis(n, vector<int>(m, 0)); 
+    int cnt = 0; 
+    for(int row = 0; row < n ; row++) {
+        for(int col = 0; col < m ;col++) {
+            if(!vis[row][col] && grid[row][col] == '1') {
+                cnt++; 
+                bfs(row, col, vis, grid); 
+            }
+        }
+    }
+    return cnt; 
+}
+```
+Bipartite Graph
+```
+bool isBipartite(vector<vector<int>>& g) {
+    vector<int> vis(g.size(),-1);
+    queue<int> q;
+    for(int i=0;i<g.size();i++){
+        if(vis[i]!=-1) continue;
+        q.push(i);
+        vis[i]=0;
+        int node;
+        while(!q.empty()){
+            node=q.front();
+            q.pop();
+            for(auto it:g[node]){
+                if(vis[it]==-1){
+                    vis[it]=1-vis[node];
+                    q.push(it);
+                }
+                else if(vis[it]==vis[node]) return false;
+            }
+        }
+    }
+    return true;
+}
+```
+Kahn’s Algorithm (Topological Sort)
+```
+vector<int> topoSort(int V, vector<int> adj[])
+{
+    int indegree[V] = {0};
+    for (int i = 0; i < V; i++) {
+        for (auto it : adj[i]) {
+            indegree[it]++;
+        }
+    }
+    queue<int> q;
+    for (int i = 0; i < V; i++) {
+        if (indegree[i] == 0) {
+            q.push(i);
+        }
+    }
+    vector<int> topo;
+    while (!q.empty()) {
+        int node = q.front();
+        q.pop();
+        topo.push_back(node);
+        for (auto it : adj[node]) {
+            indegree[it]--;
+            if (indegree[it] == 0) q.push(it);
+        }
+    }
+    return topo;
+}
+```
+Course Schedule 1
+```
+bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<int> g[numCourses];
+    vector<int> in(numCourses,0);
+    for(int i=0;i<prerequisites.size();i++){
+        g[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        in[prerequisites[i][0]]++;
+    }
+    int count=0;
+    queue<int> q;
+    for(int i=0;i<numCourses;i++) if(in[i]==0) q.push(i);
+    while(!q.empty()){
+        int x=q.front();
+        q.pop();
+        count++;
+        for(auto it:g[x]){
+            in[it]--;
+            if(in[it]==0) q.push(it); 
+        }
+    }
+    if(count==numCourses) return true;
+    return false;
+}
+```
+Course Schedule 2
+```
+vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+    vector<int> ans;
+    vector<int> g[numCourses];
+    vector<int> in(numCourses,0);
+    for(int i=0;i<prerequisites.size();i++){
+        g[prerequisites[i][1]].push_back(prerequisites[i][0]);
+        in[prerequisites[i][0]]++;
+    }
+    int count=0;
+    queue<int> q;
+    for(int i=0;i<numCourses;i++) if(in[i]==0) q.push(i);
+    while(!q.empty()){
+        int x=q.front();
+        ans.push_back(x);
+        q.pop();
+        count++;
+        for(auto it:g[x]){
+            in[it]--;
+            if(in[it]==0) q.push(it); 
+        }
+    }
+    if(count==numCourses) return ans;
+    return {};
+}
+```
+Find Eventual Safe States
+```
+vector<int> eventualSafeNodes(vector<vector<int>>& l) {
+    vector<vector<int>> g(l.size());
+    for(int i=0;i<l.size();i++) for(int j=0;j<l[i].size();j++) g[l[i][j]].push_back(i);
+    vector<int> in(g.size(),0);
+    vector<int> a;
+    for(int i=0;i<g.size();i++) for(int j=0;j<g[i].size();j++) in[g[i][j]]++;
+    queue<int> q;
+    for(int i=0;i<in.size();i++) if(!in[i]) q.push(i);
+    while(!q.empty()){
+        int x=q.front();
+        a.push_back(x);
+        q.pop();
+        for(auto it:g[x]){
+            in[it]--;
+            if(!in[it]) q.push(it);
+        }
+    } 
+    sort(a.begin(),a.end());
+    return a;
+}
+```
+Alien dictionary
+```
+```
+Shortest Path in Undirected Graph with Unit distance
+```
+vector<int> shortestPath(vector<vector<int>>& edges, int N,int M, int src){
+    vector<int> adj[N]; 
+    for(auto it : edges) {
+        adj[it[0]].push_back(it[1]); 
+        adj[it[1]].push_back(it[0]); 
+    }
+    int dist[N];
+    for(int i = 0;i<N;i++) dist[i] = 1e9;
+    dist[src] = 0; 
+    queue<int> q;
+    q.push(src); 
+    while(!q.empty()) {
+        int node = q.front(); 
+        q.pop(); 
+        for(auto it : adj[node]) {
+            if(dist[node] + 1 < dist[it]) {
+                dist[it] = 1 + dist[node]; 
+                q.push(it); 
+            }
+        }
+    }
+    return dist; 
+}
+```
+Shortest Path in DAG
+```
+void topoSort(int node, vector < pair < int, int >> adj[],
+    int vis[], stack < int > & st) {
+    vis[node] = 1;
+    for (auto it: adj[node]) {
+        int v = it.first;
+        if (!vis[v]) topoSort(v, adj, vis, st);
+    }
+    st.push(node);
+}
+
+vector < int > shortestPath(int N, int M, vector < vector < int >> & edges) {
+    vector < pair < int, int >> adj[N];
+    for (int i = 0; i < M; i++) {
+        int u = edges[i][0];
+        int v = edges[i][1];
+        int wt = edges[i][2];
+        adj[u].push_back({v, wt}); 
+    }
+    int vis[N] = {0};
+    stack < int > st;
+    for (int i = 0; i < N; i++) {
+        if (!vis[i]) topoSort(i, adj, vis, st);
+    }
+    vector < int > dist(N);
+    for (int i = 0; i < N; i++) dist[i] = 1e9;
+    dist[0] = 0;
+    while (!st.empty()) {
+        int node = st.top();
+        st.pop();
+        for (auto it: adj[node]) {
+            int v = it.first;
+            int wt = it.second;
+            if (dist[node] + wt < dist[v]) {
+                dist[v] = wt + dist[node];
+            }
+        }
+    }
+    return dist;
+}
+```
+Dijkstra Algorithm
+```
+vector <int> dijkstra(int V, vector<vector<int>> adj[], int S) {
+    set<pair<int,int>> st; 
+    vector<int> dist(V, 1e9); 
+    st.insert({0, S}); 
+    dist[S] = 0;
+    while(!st.empty()) {
+        auto it = *(st.begin()); 
+        int node = it.second; 
+        int dis = it.first; 
+        st.erase(it); 
+        for(auto it : adj[node]) {
+            int adjNode = it[0]; 
+            int edgW = it[1]; 
+            if(dis + edgW < dist[adjNode]) {
+                if(dist[adjNode] != 1e9) st.erase({dist[adjNode], adjNode}); 
+                dist[adjNode] = dis + edgW; 
+                st.insert({dist[adjNode], adjNode}); 
+                }
+        }
+    }
+    return dist; 
+}
+```
+Dijkstra Algorithm (Efficient)
+```
+vector<int> dijkstra(int V, vector<vector<int>> adj[], int S) { 
+    priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+    vector<int> distTo(V, INT_MAX);
+    distTo[S] = 0;
+    pq.push({0, S});
+    while (!pq.empty())
+    {
+        int node = pq.top().second;
+        int dis = pq.top().first;
+        pq.pop();
+        for (auto it : adj[node])
+        {
+            int v = it[0];
+            int w = it[1];
+            if (dis + w < distTo[v])
+            {
+                distTo[v] = dis + w;
+                pq.push({dis + w, v});
+            }
+        }
+    }
+    return distTo;
+}
+```
+Shortest Path in Binary Matrix
+```
+int shortestPathBinaryMatrix(vector<vector<int>>& g) {
+    if(g[0][0]==1) return -1;
+    queue<pair<int,int>> q;
+    q.push({0,0});
+    int c=0;
+    int x_arr[]={-1,0,1,-1,1,-1,0,1};
+    int y_arr[]={-1,-1,-1,0,0,1,1,1};
+    int x,y,nx,ny;
+    while(!q.empty()){
+        c++;
+        int sz=q.size();
+        while(sz--){
+            x=q.front().first;
+            y=q.front().second;
+            if(x==g.size()-1 && y==g.size()-1) return c;
+            q.pop();
+            for(int i=0;i<8;i++){
+                nx=x+x_arr[i];
+                ny=y+y_arr[i];
+                if(nx>=0 && nx<g.size() && nx>=0 && ny<g.size() && !g[nx][ny]){
+                    g[nx][ny]=1;
+                    q.push({nx,ny});
+                }
+            }
+        }
+    }
+    return -1;
+}
+```
+Path With Minimum Effort
+```
+int minimumEffortPath(vector<vector<int>>& g) {
+    int r=g.size(),c=g[0].size();
+    priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>>> pq;
+    pq.push({0,{0,0}});
+    vector<vector<int>> dist(r,vector<int>(c,1e9));
+    dist[0][0]=0;
+    int x_arr[]={0,0,1,-1};
+    int y_arr[]={1,-1,0,0};
+    int nx,ny,diff,x,y,ma;
+    while(!pq.empty()){
+        auto p=pq.top();
+        pq.pop();
+        diff=p.first;
+        x=p.second.first;
+        y=p.second.second;
+        if(x==r-1 && y==c-1) return diff;
+        for(int i=0;i<4;i++){
+            nx=x+x_arr[i];
+            ny=y+y_arr[i];
+            if(nx>=0 && nx<r && ny>=0 && ny<c){
+                ma=max(diff,abs(g[x][y]-g[nx][ny]));
+                if(ma<dist[nx][ny]){
+                    dist[nx][ny]=ma;
+                    pq.push({ma,{nx,ny}});
+                }
+            }
+        }
+    }
+    return 0;
+}
+```
+Cheapest Flights Within K Stops
+```
+int findCheapestPrice(int n, vector<vector<int>>& e, int s, int t, int k) {
+    vector<pair<int,int>> g[n];
+    for(auto it:e) g[it[0]].push_back({it[1],it[2]});
+    queue<pair<int,pair<int,int>>> q;
+    vector<int> dist(n,1e9);
+    q.push({0,{s,0}});
+    dist[s]=0;
+    int step,node,weight;
+    while(!q.empty()){
+        auto p=q.front();
+        q.pop();
+        step=p.first;
+        node=p.second.first;
+        weight=p.second.second;
+        for(auto it:g[node]){
+            if(dist[it.first]>it.second+weight && step<=k){
+                dist[it.first]=it.second+weight;
+                q.push({step+1,{it.first,dist[it.first]}});
+            }
+        }
+    }
+    if(dist[t]==1e9) return -1;
+    return dist[t];
+}
+```
+Network Delay Time
+```
+int networkDelayTime(vector<vector<int>>& times, int n, int k) {
+    vector<pair<int,int>> g[n];
+    for(int i=0;i<times.size();i++){
+        g[times[i][0]-1].push_back({times[i][1]-1,times[i][2]});            
+    }
+    vector<int> dist(n,1e9);
+    dist[k-1]=0;
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> q;
+    q.push({0,k-1});
+    while(!q.empty()){
+        int d=q.top().first;
+        int x=q.top().second;
+        q.pop();
+        for(auto it:g[x]){
+            if(dist[it.first]>dist[x]+it.second){
+                dist[it.first]=dist[x]+it.second;
+                q.push({dist[it.first],it.first});
+            }
+        }
+    }
+    int ans=INT_MIN;
+    for(int i=0;i<n;i++){
+        ans=max(ans,dist[i]);
+    }
+    if(ans==1e9) return -1;
+    return ans;
+}
+```
+Number of Ways to Arrive at Destination
+```
+```
+Minimum Multiplications to Reach End
+```
+int minimumMultiplications(vector<int> &arr, int start, int end) {
+    queue<pair<int, int>> q;
+    q.push({start, 0});
+    vector<int> dist(100000, 1e9);
+    dist[start] = 0;
+    int mod = 100000;
+    while (!q.empty())
+    {
+        int node = q.front().first;
+        int steps = q.front().second;
+        q.pop();
+        for (auto it : arr)
+        {
+            int num = (it * node) % mod;
+            if (steps + 1 < dist[num])
+            {
+                dist[num] = steps + 1;
+                if (num == end)
+                    return steps + 1;
+                q.push({num, steps + 1});
+            }
+        }
+    }
+    return -1;
+}
+```
+Bellman Ford Algorithm
+```
+vector<int> bellman_ford(int V, vector<vector<int>>& edges, int S) {
+    vector<int> dist(V, 1e8);
+    dist[S] = 0;
+    for (int i = 0; i < V - 1; i++) {
+        for (auto it : edges) {
+            int u = it[0];
+            int v = it[1];
+            int wt = it[2];
+            if (dist[u] != 1e8 && dist[u] + wt < dist[v]) {
+                dist[v] = dist[u] + wt;
+            }
+        }
+    }
+    for (auto it : edges) {
+        int u = it[0];
+        int v = it[1];
+        int wt = it[2];
+        if (dist[u] != 1e8 && dist[u] + wt < dist[v]) {
+            return { -1};
+        }
+    }
+    return dist;
+}
+```
+Floyd Warshall Algorithm
+```
+void shortest_distance(vector<vector<int>>&matrix) {
+    int n = matrix.size();
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
+            if (matrix[i][j] == -1) matrix[i][j] = 1e9;
+            if (i == j) matrix[i][j] = 0;
+        }
+    }
+    for (int k = 0; k < n; k++) {
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                matrix[i][j] = min(matrix[i][j], matrix[i][k] + matrix[k][j]);
+            }
+        }
+    }
+}
+```
+Find the City With the Smallest Number of Neighbors at a Threshold Distance
+```
+    int findTheCity(int n, vector<vector<int>>& e, int t) {
+        vector<vector<int>> g(n,vector<int>(n,INT_MAX));
+        for(auto it:e){
+            g[it[0]][it[1]]=it[2];
+            g[it[1]][it[0]]=it[2];
+        }
+        for(int i=0;i<n;i++) g[i][i]=0;
+        for(int k=0;k<n;k++){
+            for(int i=0;i<n;i++){
+                for(int j=0;j<n;j++){
+                    if(g[i][k]!=INT_MAX && g[k][j]!=INT_MAX) g[i][j]=min(g[i][j],g[i][k]+g[k][j]);
+                }
+            }
+        }
+        int c,city=-1,v=n;
+        for(int i=0;i<n;i++){
+            c=0;
+            for(auto j:g[i]){
+                if(j<=t) c++;
+            }
+            if(c<=v){
+                v=c;
+                city=i;
+            }
+        }
+        return city;
+    }
+```
+Prim’s Algorithm
+```
+```
+Disjoint Set Union
+```
+public:
+    DisjointSet(int n) {
+        rank.resize(n + 1, 0);
+        parent.resize(n + 1);
+        size.resize(n + 1);
+        for (int i = 0; i <= n; i++) {
+            parent[i] = i;
+            size[i] = 1;
+        }
+    }
+
+    int findUPar(int node) {
+        if (node == parent[node])
+            return node;
+        return parent[node] = findUPar(parent[node]);
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+        }
+        else if (rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u;
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            rank[ulp_u]++;
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u);
+        int ulp_v = findUPar(v);
+        if (ulp_u == ulp_v) return;
+        if (size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v;
+            size[ulp_v] += size[ulp_u];
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v];
+        }
+    }
+};
+```
+Kruskal’s Algorithm
+```
+int spanningTree(int V, vector<vector<int>> adj[]) {
+    vector<pair<int, pair<int, int>>> edges;
+    for (int i = 0; i < V; i++) {
+        for (auto it : adj[i]) {
+            int adjNode = it[0];
+            int wt = it[1];
+            int node = i;
+            edges.push_back({wt, {node, adjNode}});
+        }
+    }
+    DisjointSet ds(V);
+    sort(edges.begin(), edges.end());
+    int mstWt = 0;
+    for (auto it : edges) {
+        int wt = it.first;
+        int u = it.second.first;
+        int v = it.second.second;
+        if (ds.findUPar(u) != ds.findUPar(v)) {
+            mstWt += wt;
+            ds.unionBySize(u, v);
+        }
+    }
+    return mstWt;
+}
+```
+Number of Operations to Make Network Connected
+```
+void f(int node,vector<vector<int>>& g,vector<bool> &vis){
+    vis[node]=true;
+    for(auto it:g[node]){
+        if(!vis[it]) f(it,g,vis);
+    }
+}
+
+int makeConnected(int n, vector<vector<int>>& c) {
+    if(c.size()<n-1) return -1;
+    vector<vector<int>> g(n);
+    for(auto it:c) g[it[0]].push_back(it[1]),g[it[1]].push_back(it[0]);
+    vector<bool> vis(n);
+    int a=0;
+    for(int i=0;i<n;i++){
+        if(!vis[i]) f(i,g,vis),a++;
+    }
+    return a-1;
+}
+```
+Most Stones Removed with Same Row or Column
+```
+int par[20001];
+int sz[20001];
+
+int parent(int n){
+    if(par[n]==n) return n;
+    return par[n]=parent(par[n]);
+}
+
+void add(int u,int v){
+    int u_par=parent(u);
+    int v_par=parent(v);
+    if(u_par==v_par) return;
+    if(sz[u_par]>sz[v_par]){
+        par[v_par]=u_par;
+        sz[u_par]+=sz[v_par];
+    }
+    else{
+        par[u_par]=v_par;
+        sz[v_par]+=sz[u_par];
+    }
+}
+
+int removeStones(vector<vector<int>>& a) {
+    int c=0;
+    for(int i=0;i<20001;i++){
+        par[i]=i;
+        sz[i]=0;
+    }
+    int row=INT_MIN;
+    for(auto it:a) row=max(row,it[0]);
+    unordered_set<int> s;
+    for(auto it:a){
+        add(it[0],it[1]+row+1);
+        s.insert(it[0]);
+        s.insert(it[1]+row+1);
+    }
+    for(auto it:s) if(parent(it)==it) c++;
+    return a.size()-c;
+}
+```
+Accounts Merge
+```
+int p[1001];
+int sz[1001];
+
+int par(int n){
+    if(p[n]==n) return n;
+    return p[n]=par(p[n]);
+}
+
+void add(int u,int v){
+    int pu=par(u);
+    int pv=par(v);
+    if(pu==pv) return;
+    if(sz[pu]>sz[pv]){
+        p[pv]=pu;
+        sz[pu]+=sz[pv];
+    }
+    else{
+        p[pu]=pv;
+        sz[pv]+=sz[pu];
+    }
+}
+
+vector<vector<string>> accountsMerge(vector<vector<string>>& a) {
+    for(int i=0;i<1001;i++){
+        p[i]=i;
+        sz[i]=0;
+    }
+    unordered_map<string,int> mp;
+    for(int i=0;i<a.size();i++){
+        for(int j=1;j<a[i].size();j++){
+            if(mp.find(a[i][j])==mp.end()) mp[a[i][j]]=i;
+            else add(i,mp[a[i][j]]);
+        }
+    }
+    unordered_map<int,set<string>> acc;
+    for(auto it:mp){
+        acc[par(it.second)].insert(it.first);
+    }
+    vector<vector<string>> ans;
+    vector<string> usr;
+    for(auto it:acc){
+        cout<<a[it.first][0]<<" ";
+        for(auto j:it.second) cout<<j<<" ";
+        cout<<"\n";
+        int pa=par(it.first);
+        if(it.first==pa) usr.push_back(a[it.first][0]);          
+        for(auto j:it.second) usr.push_back(j);
+        ans.push_back(usr);
+        usr.clear();
+    }
+    return ans;
+}
+```
+Number of island II
+```
+```
+Making A Large Island
+```
+int p[250001];
+int sz[250001];
+
+int par(int n){
+    if(p[n]==n) return n;
+    return p[n]=par(p[n]);
+}
+
+void add(int u,int v){
+    int pu=par(u);
+    int pv=par(v);
+    if(pu==pv) return;
+    if(sz[pu]>sz[pv]){
+        p[pv]=pu;
+        sz[pu]+=sz[pv];
+    }
+    else{
+        p[pu]=pv;
+        sz[pv]+=sz[pu];
+    }
+}
+
+int largestIsland(vector<vector<int>>& g) {
+    for(int i=0;i<250001;i++){
+        p[i]=i;
+        sz[i]=1;
+    }
+    int r=g.size(),c=g[0].size(),xa,ya,pa,sum,ans=0;
+    set<int> s;
+    int x_arr[]={0,0,1,-1},y_arr[]={1,-1,0,0};
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            if(g[i][j]){
+                for(int k=0;k<4;k++){
+                    xa=i+x_arr[k];
+                    ya=j+y_arr[k];
+                    if(xa<0 || xa>=r || ya<0 || ya>=c || !g[xa][ya]) continue;
+                    add(i*c+j,xa*c+ya);
+                }
+            }
+        }
+    }
+
+    for(int i=0;i<r;i++){
+        for(int j=0;j<c;j++){
+            if(!g[i][j]){
+                sum=0;
+                s.clear();
+                for(int k=0;k<4;k++){
+                    xa=i+x_arr[k];
+                    ya=j+y_arr[k];
+                    if(xa<0 || xa>=r || ya<0 || ya>=c || !g[xa][ya]) continue;
+                    pa=par(xa*c+ya);
+                    if(s.find(pa)==s.end()) sum+=sz[pa];
+                    s.insert(pa);
+                }
+                ans=max(ans,sum+1);
+            }
+        }
+    }
+    if(!ans) return r*c;
+    return ans;
+}
+```
+Swim in rising water
+```
+```
+Bridges in Graph
+```
+int timer=1;
+
+void f(vector<int> g[],vector<bool> &vis,vector<int> &tin,vector<int> &low,vector<vector<int>> &b,int node,int p){
+    vis[node]=true;
+    tin[node]=low[node]=timer;
+    timer++;
+    for(auto it:g[node]){
+        if(it==p) continue;
+        if(!vis[it]){
+            f(g,vis,tin,low,b,it,node);
+            low[node]=min(low[node],low[it]);
+            if(tin[node]<low[it]) b.push_back({node,it});
+        }
+        else{
+            low[node]=min(low[node],low[it]);
+        }
+    }
+}
+
+vector<vector<int>> criticalConnections(int n, vector<vector<int>>& c) {
+    vector<vector<int>> b;
+    vector<int> g[n];
+    for(auto it:c){
+        g[it[0]].push_back(it[1]);
+        g[it[1]].push_back(it[0]);
+    }
+    vector<bool> vis(n);
+    vector<int> tin(n);
+    vector<int> low(n);
+    f(g,vis,tin,low,b,0,-1);
+    return b;
+}
+```
+Articulation Point
+```
+```
+Kosaraju's Algorithm
+```
+void dfs(int node, vector<int> &vis, vector<int> adj[], stack<int> &st) {
+    vis[node] = 1;
+    for (auto it : adj[node]) {
+        if (!vis[it]) {
+            dfs(it, vis, adj, st);
+        }
+    }
+    st.push(node);
+}
+
+void dfs3(int node, vector<int> &vis, vector<int> adjT[]) {
+    vis[node] = 1;
+    for (auto it : adjT[node]) {
+        if (!vis[it]) {
+            dfs3(it, vis, adjT);
+        }
+    }
+}
+
+int kosaraju(int V, vector<int> adj[])
+{
+    vector<int> vis(V, 0);
+    stack<int> st;
+    for (int i = 0; i < V; i++) {
+        if (!vis[i]) {
+            dfs(i, vis, adj, st);
+        }
+    }
+    vector<int> adjT[V];
+    for (int i = 0; i < V; i++) {
+        vis[i] = 0;
+        for (auto it : adj[i]) {
+            adjT[it].push_back(i);
+        }
+    }
+    int scc = 0;
+    while (!st.empty()) {
+        int node = st.top();
+        st.pop();
+        if (!vis[node]) {
+            scc++;
+            dfs3(node, vis, adjT);
+        }
+    }
+    return scc;
 }
 ```
 
