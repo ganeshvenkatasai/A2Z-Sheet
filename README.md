@@ -3417,7 +3417,856 @@ int kosaraju(int V, vector<int> adj[])
 }
 ```
 
-
 # Dynamic Programming
+
+Climbing Stars
+```
+int f(int n,vector<int> &dp){
+    if(n==0) return 1;
+    if(n<0) return 0;
+    if(dp[n]!=-1) return dp[n];
+    return dp[n]=f(n-1,dp)+f(n-2,dp);
+}
+
+int climbStairs(int n) {
+    vector<int> dp(n+1,-1);
+    return f(n,dp);
+}
+```
+Frog Jump
+```
+int f(int i,vector<int> &h,vector<int> &dp){
+    if(i==0) return dp[i]=0;
+    if(dp[i]!=-1) return dp[i];
+    int one=abs(h[i]-h[i-1])+f(i-1,h,dp);
+    int two=INT_MAX;
+    if(i>1) two=abs(h[i]-h[i-2])+f(i-2,h,dp);
+    return dp[i]=min(one,two);
+}
+
+int frogJump(int n, vector<int> &heights){
+    vector<int> dp(n,-1);
+    return f(n-1,heights,dp);
+}
+```
+Frog Jump with k distances
+```
+```
+Max sum of non-adjacent elements
+```
+int f(int ind,vector<int>& nums,vector<int> &dp){  
+    if(ind<0) return 0;
+    if(ind==0) return dp[ind]=nums[ind];
+    if(dp[ind]!=-1) return dp[ind];
+    int pick=nums[ind]+f(ind-2,nums,dp);
+    int notPick=f(ind-1,nums,dp);
+    return dp[ind]=max(pick,notPick);
+}
+
+int rob(vector<int>& nums) {
+    vector<int> dp(nums.size(),-1);
+    return f(nums.size()-1,nums,dp);
+}
+```
+Max sum of non-adjacent circular elements
+```
+int f(int ind,vector<int>& nums,vector<int> &dp){    
+    if(ind<0) return 0;
+    if(ind==0) return dp[ind]=nums[ind];
+    if(dp[ind]!=-1) return dp[ind];
+    int pick=nums[ind]+f(ind-2,nums,dp);
+    int notPick=f(ind-1,nums,dp);
+    return dp[ind]=max(pick,notPick);
+}
+
+int rob(vector<int>& nums) {
+    if(nums.size()==1) return nums[0];
+    vector<int> n1,n2;
+    for(int i=0;i<nums.size();i++){
+        if(i!=0) n1.push_back(nums[i]);
+        if(i!=nums.size()-1) n2.push_back(nums[i]);
+    }
+    vector<int> dp1(n1.size(),-1);
+    vector<int> dp2(n2.size(),-1);
+    return max(f(n1.size()-1,n1,dp1),f(n2.size()-1,n2,dp2));
+}
+```
+Ninja's Training
+```
+```
+Grid Unique Paths
+```
+int f(int i,int j,vector<vector<int>> &dp){
+    if(i<0 || j<0) return 0;  
+    if(dp[i][j]!=-1) return dp[i][j];
+    if(i==0 && j==0) return 1;
+    return dp[i][j]=f(i-1,j,dp)+f(i,j-1,dp);
+}
+
+int uniquePaths(int m, int n) {
+    vector<vector<int>> dp(m,vector<int>(n,-1));
+    return f(m-1,n-1,dp);
+}
+```
+Grid Unique Paths with obstacles
+```
+int solve(int i,int j,vector<vector<int>>& m,vector<vector<int>> &dp){
+    if(i<0 || j<0) return 0;
+    if(m[i][j]==1) return 0;
+    if(i==0 && j==0) return 1;
+    if(dp[i][j]!=-1) return dp[i][j];
+    return dp[i][j]=solve(i-1,j,m,dp)+solve(i,j-1,m,dp);
+}
+
+int uniquePathsWithObstacles(vector<vector<int>>& m) {
+    vector<vector<int>> dp(m.size(),vector<int>(m[0].size(),-1));
+    return solve(m.size()-1,m[0].size()-1,m,dp);
+}
+```
+Minimum path sum in Grid
+```
+int f(vector<vector<int>>& g,int i,int j,vector<vector<int>>& dp){
+    if(i==0 && j==0) return g[i][j];
+    if(i<0 || j<0) return 1e9;
+    if(dp[i][j]!=-1) return dp[i][j];
+    return dp[i][j]=g[i][j]+min(f(g,i-1,j,dp),f(g,i,j-1,dp));
+}
+int minPathSum(vector<vector<int>>& g) {
+    vector<vector<int>> dp(g.size(),vector<int>(g[0].size(),-1));
+    return f(g,g.size()-1,g[0].size()-1,dp);
+}
+```
+Ninja and his friends
+```
+```
+Subset sum equal to target	
+```
+bool subsetSumUtil(int ind, int target, vector<int>& arr, vector<vector<int>>& dp) {
+    if (target == 0) return true;
+    if (ind == 0) return arr[0] == target;
+    if (dp[ind][target] != -1) return dp[ind][target];
+    bool notTaken = subsetSumUtil(ind - 1, target, arr, dp);
+    bool taken = false;
+    if (arr[ind] <= target) taken = subsetSumUtil(ind - 1, target - arr[ind], arr, dp);
+    return dp[ind][target] = notTaken || taken;
+}
+
+bool subsetSumToK(int n, int k, vector<int>& arr) {
+    vector<vector<int>> dp(n, vector<int>(k + 1, -1));
+    return subsetSumUtil(n - 1, k, arr, dp);
+}
+```	
+
+Partition Equal Subset Sum 	
+```
+bool subsetSumUtil(int ind, int target, vector<int>& arr, vector<vector<int>>& dp) {
+    if (target == 0) return true;
+    if (ind == 0) return arr[0] == target;
+    if (dp[ind][target] != -1) return dp[ind][target];
+    bool notTaken = subsetSumUtil(ind - 1, target, arr, dp);
+    bool taken = false;
+    if (arr[ind] <= target) taken = subsetSumUtil(ind - 1, target - arr[ind], arr, dp);
+    return dp[ind][target] = notTaken || taken;
+}
+
+bool canPartition(int n, vector<int>& arr) {
+    int totSum = 0;
+    for (int i = 0; i < n; i++) totSum += arr[i];
+    if (totSum % 2 == 1) return false;
+    else {
+        int k = totSum / 2;
+        vector<vector<int>> dp(n, vector<int>(k + 1, -1));
+        return subsetSumUtil(n - 1, k, arr, dp);
+    }
+}
+```	
+	
+Partition Set Into 2 Subsets With Min Absolute Sum Diff
+```
+bool subsetSumUtil(int ind, int target, vector<int>& arr, vector<vector<int>>& dp) {
+    if (target == 0) return dp[ind][target] = true;
+    if (ind == 0) return dp[ind][target] = (arr[0] == target);
+    if (dp[ind][target] != -1) return dp[ind][target];
+    bool notTaken = subsetSumUtil(ind - 1, target, arr, dp);
+    bool taken = false;
+    if (arr[ind] <= target) taken = subsetSumUtil(ind - 1, target - arr[ind], arr, dp);
+    return dp[ind][target] = notTaken || taken;
+}
+
+int minSubsetSumDifference(vector<int>& arr, int n) {
+    int totSum = 0;
+    for (int i = 0; i < n; i++) totSum += arr[i];
+    vector<vector<int>> dp(n, vector<int>(totSum + 1, -1));
+    for (int i = 0; i <= totSum; i++) bool dummy = subsetSumUtil(n - 1, i, arr, dp);
+    int mini = 1e9;
+    for (int i = 0; i <= totSum; i++) {
+        if (dp[n - 1][i] == true) {
+            int diff = abs(i - (totSum - i));
+            mini = min(mini, diff);
+        }
+    }
+    return mini;
+}
+```
+	
+Count Subsets with Sum K
+```
+int findWaysUtil(int ind, int target, vector<int>& arr, vector<vector<int>>& dp) {
+    if (target == 0) return 1;
+    if (ind == 0) return (arr[0] == target) ? 1 : 0;
+    if (dp[ind][target] != -1) return dp[ind][target];
+    int notTaken = findWaysUtil(ind - 1, target, arr, dp);
+    int taken = 0;
+    if (arr[ind] <= target) taken = findWaysUtil(ind - 1, target - arr[ind], arr, dp);
+    return dp[ind][target] = notTaken + taken;
+}
+
+int findWays(vector<int>& num, int k) {
+    int n = num.size();
+    vector<vector<int>> dp(n, vector<int>(k + 1, -1));
+    return findWaysUtil(n - 1, k, num, dp);
+}
+```	
+
+Count Partitions with Given Difference
+```
+int findWaysUtil(int ind, int target, vector<int>& arr, vector<vector<int>> &dp){
+    if(ind == 0){
+            if(target==0 && arr[0]==0) return 2;
+            if(target==0 || target == arr[0]) return 1;
+            return 0;
+    }
+    if(dp[ind][target]!=-1) return dp[ind][target];
+    int notTaken = findWaysUtil(ind-1,target,arr,dp);
+    int taken = 0;
+    if(arr[ind]<=target) taken = findWaysUtil(ind-1,target-arr[ind],arr,dp);
+    return dp[ind][target]= notTaken + taken;
+}
+
+int findWays(vector<int> &num, int k){
+    int n = num.size();
+    vector<vector<int>> dp(n,vector<int>(k+1,-1));
+    return findWaysUtil(n-1,k,num,dp);
+}
+```	
+
+0/1 Knapsack		
+```
+int knapsackUtil(vector<int>& wt, vector<int>& val, int ind, int W, vector<vector<int>>& dp) {
+    if (ind == 0 || W == 0) return 0;
+    if (dp[ind][W] != -1) return dp[ind][W];
+    int notTaken = knapsackUtil(wt, val, ind - 1, W, dp);
+    int taken = 0;
+    if (wt[ind] <= W) taken = val[ind] + knapsackUtil(wt, val, ind - 1, W - wt[ind], dp);
+    return dp[ind][W] = max(notTaken, taken);
+}
+
+int knapsack(vector<int>& wt, vector<int>& val, int n, int W) {
+    vector<vector<int>> dp(n, vector<int>(W + 1, -1));
+    return knapsackUtil(wt, val, n - 1, W, dp);
+}
+```
+
+Minimum Coins
+```
+int minimumElementsUtil(vector<int>& arr, int ind, int T, vector<vector<int>>& dp){
+    if(ind == 0){
+        if(T % arr[0] == 0) return T / arr[0];
+        else return 1e9;
+    }
+    if(dp[ind][T] != -1) return dp[ind][T];
+    int notTaken = 0 + minimumElementsUtil(arr, ind - 1, T, dp);
+    int taken = 1e9;
+    if(arr[ind] <= T) taken = 1 + minimumElementsUtil(arr, ind, T - arr[ind], dp);
+    return dp[ind][T] = min(notTaken, taken);
+}
+
+int minimumElements(vector<int>& arr, int T){
+    int n = arr.size();
+    vector<vector<int>> dp(n, vector<int>(T + 1, -1));
+    int ans =  minimumElementsUtil(arr, n - 1, T, dp);
+    if(ans >= 1e9) return -1;
+    return ans;
+}
+```	
+	
+Target Sum
+```
+int countPartitionsUtil(int ind, int target, vector<int>& arr, vector<vector<int>>& dp) {
+    if (ind == 0) {
+        if (target == 0 && arr[0] == 0) return 2;
+        if (target == 0 || target == arr[0]) return 1;
+        return 0;
+    }
+    if (dp[ind][target] != -1) return dp[ind][target];
+    int notTaken = countPartitionsUtil(ind - 1, target, arr, dp);
+    int taken = 0;
+    if (arr[ind] <= target) taken = countPartitionsUtil(ind - 1, target - arr[ind], arr, dp);
+    return dp[ind][target] = (notTaken + taken);
+}
+
+int targetSum(int n, int target, vector<int>& arr) {
+    int totSum = 0;
+    for (int i = 0; i < arr.size(); i++) totSum += arr[i];
+    if (totSum - target < 0) return 0;
+    if ((totSum - target) % 2 == 1) return 0;
+    int s2 = (totSum - target) / 2;
+    vector<vector<int>> dp(n, vector<int>(s2 + 1, -1));
+    return countPartitionsUtil(n - 1, s2, arr, dp);
+}
+```
+
+Min Coin Change Count Ways
+```
+long countWaysToMakeChangeUtil(vector<int>& arr, int ind, int T, vector<vector<long>>& dp) {
+    if (ind == 0) return (T % arr[0] == 0);
+    if (dp[ind][T] != -1) return dp[ind][T];
+    long notTaken = countWaysToMakeChangeUtil(arr, ind - 1, T, dp);
+    long taken = 0;
+    if (arr[ind] <= T) taken = countWaysToMakeChangeUtil(arr, ind, T - arr[ind], dp);
+    return dp[ind][T] = notTaken + taken;
+}
+
+long countWaysToMakeChange(vector<int>& arr, int n, int T) {
+    vector<vector<long>> dp(n, vector<long>(T + 1, -1));
+    return countWaysToMakeChangeUtil(arr, n - 1, T, dp);
+}
+```		
+	
+Unbounded Knapsack
+```
+int knapsackUtil(vector<int>& wt, vector<int>& val, int ind, int W, vector<vector<int>>& dp) {
+    if (ind == 0) return (W / wt[0]) * val[0];
+    if (dp[ind][W] != -1) return dp[ind][W];
+    int notTaken = 0 + knapsackUtil(wt, val, ind - 1, W, dp);
+    int taken = INT_MIN;
+    if (wt[ind] <= W) taken = val[ind] + knapsackUtil(wt, val, ind, W - wt[ind], dp);
+    return dp[ind][W] = max(notTaken, taken);
+}
+
+int unboundedKnapsack(int n, int W, vector<int>& val, vector<int>& wt) {
+    vector<vector<int>> dp(n, vector<int>(W + 1, -1));
+    return knapsackUtil(wt, val, n - 1, W, dp);
+}
+```
+
+Rod Cutting Problem
+```
+```
+
+Longest Common Subsequence	
+```
+int lcsUtil(string& s1, string& s2, int ind1, int ind2, vector<vector<int>>& dp) {
+    if (ind1 < 0 || ind2 < 0) return 0;
+    if (dp[ind1][ind2] != -1) return dp[ind1][ind2];
+    if (s1[ind1] == s2[ind2]) return dp[ind1][ind2] = 1 + lcsUtil(s1, s2, ind1 - 1, ind2 - 1, dp);
+    else return dp[ind1][ind2] = max(lcsUtil(s1, s2, ind1, ind2 - 1, dp), lcsUtil(s1, s2, ind1 - 1, ind2, dp));
+}
+
+int lcs(string s1, string s2) {
+    int n = s1.size();
+    int m = s2.size();
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+    return lcsUtil(s1, s2, n - 1, m - 1, dp);
+}
+```
+
+Print Longest Common Subsequence	
+```
+void lcs(string s1, string s2) {
+    int n = s1.size();
+    int m = s2.size();
+    vector < vector < int >> dp(n + 1, vector < int > (m + 1, 0));
+    for (int i = 0; i <= n; i++) dp[i][0] = 0;
+    for (int i = 0; i <= m; i++) dp[0][i] = 0;
+    for (int ind1 = 1; ind1 <= n; ind1++) {
+        for (int ind2 = 1; ind2 <= m; ind2++) {
+            if (s1[ind1 - 1] == s2[ind2 - 1]) dp[ind1][ind2] = 1 + dp[ind1 - 1][ind2 - 1];
+            else dp[ind1][ind2] = 0 + max(dp[ind1 - 1][ind2], dp[ind1][ind2 - 1]);
+        }
+    }
+    int len = dp[n][m];
+    int i = n;
+    int j = m;
+    int index = len - 1;
+    string str = "";
+    for (int k = 1; k <= len; k++) str += "$";
+    while (i > 0 && j > 0) {
+        if (s1[i - 1] == s2[j - 1]) {
+            str[index] = s1[i - 1];
+            index--;
+            i--;
+            j--;
+        } 
+        else if (s1[i - 1] > s2[j - 1]) i--;
+        else j--;
+    }
+    cout << str;
+}
+
+```
+
+Longest Common Substring 	
+```
+int lcs(string &s1, string &s2){
+    int n = s1.size();
+    int m = s2.size();
+    vector> dp(n+1, vector(m+1, 0));
+    int ans = 0;
+    for(int i = 1; i <= n; i++){
+        for(int j = 1; j <= m; j++){
+            if(s1[i-1] == s2[j-1]){
+                int val = 1 + dp[i-1][j-1];
+                dp[i][j] = val;
+                ans = max(ans, val);
+            }
+            else dp[i][j] = 0;
+        }
+    }
+    return ans;
+}
+```
+
+Longest Palindromic Subsequence	
+```
+int longestPalindromeSubsequence(string s) {
+    string t = s;
+    reverse(s.begin(), s.end());
+    return lcs(s, t);
+}
+```
+
+Minimum insertions to make string palindrome
+```
+int minInsertion(string s) {
+    int n = s.size();
+    int k = longestPalindromeSubsequence(s);
+    return n - k;
+}
+```
+
+Minimum Insertions/Deletions to Convert String	
+```
+int canYouMake(string str1, string str2) {
+    int n = str1.size();
+    int m = str2.size();
+    int k = lcs(str1, str2);
+    return (n - k) + (m - k);
+}
+```
+
+Shortest Common Supersequence	
+```
+```
+
+Distinct Subsequences	
+```
+int countUtil(string s1, string s2, int ind1, int ind2, vector<vector<int>>& dp) {
+    if (ind2 < 0) return 1;
+    if (ind1 < 0) return 0;
+    if (dp[ind1][ind2] != -1) return dp[ind1][ind2];
+    int result = 0;
+    if (s1[ind1] == s2[ind2]) {
+        int leaveOne = countUtil(s1, s2, ind1 - 1, ind2 - 1, dp);
+        int stay = countUtil(s1, s2, ind1 - 1, ind2, dp);
+        result = (leaveOne + stay) % prime;
+    } 
+    else {
+        result = countUtil(s1, s2, ind1 - 1, ind2, dp);
+    }
+    dp[ind1][ind2] = result;
+    return result;
+}
+
+int subsequenceCounting(string &s1, string &s2, int lt, int ls) {
+    vector<vector<int>> dp(lt, vector<int>(ls, -1));
+    return countUtil(s1, s2, lt - 1, ls - 1, dp);
+}
+```
+
+Edit Distance	
+```
+int editDistanceUtil(string& S1, string& S2, int i, int j, vector<vector<int>>& dp) {
+    if (i < 0) return j + 1;
+    if (j < 0) return i + 1;
+    if (dp[i][j] != -1) return dp[i][j];
+    if (S1[i] == S2[j]) return dp[i][j] = 0 + editDistanceUtil(S1, S2, i - 1, j - 1, dp);
+    else return dp[i][j] = 1 + min({
+                               editDistanceUtil(S1, S2, i - 1, j - 1, dp),
+                               editDistanceUtil(S1, S2, i - 1, j, dp),
+                               editDistanceUtil(S1, S2, i, j - 1, dp)
+                               });
+}
+
+int editDistance(string& S1, string& S2) {
+    int n = S1.size();
+    int m = S2.size();
+    vector<vector<int>> dp(n, vector<int>(m, -1));
+    return editDistanceUtil(S1, S2, n - 1, m - 1, dp);
+}
+```
+
+Wildcard Matching
+```
+bool isAllStars(string &S1, int i) {
+    for (int j = 0; j <= i; j++) {
+        if (S1[j] != '*') return false;
+    }
+    return true;
+}
+
+bool wildcardMatchingUtil(string &S1, string &S2, int i, int j, vector<vector<bool>> &dp) {
+    if (i < 0 && j < 0) return true;
+    if (i < 0 && j >= 0) return false;
+    if (j < 0 && i >= 0) return isAllStars(S1, i);
+    if (dp[i][j] != -1) return dp[i][j];
+    if (S1[i] == S2[j] || S1[i] == '?') return dp[i][j] = wildcardMatchingUtil(S1, S2, i - 1, j - 1, dp);
+    else {
+        if (S1[i] == '*') return dp[i][j] = wildcardMatchingUtil(S1, S2, i - 1, j, dp) || wildcardMatchingUtil(S1, S2, i, j - 1, dp);
+        else return false;
+    }
+}
+
+bool wildcardMatching(string &S1, string &S2) {
+    int n = S1.size();
+    int m = S2.size();
+    vector<vector<bool>> dp(n, vector<bool>(m, -1));
+    return wildcardMatchingUtil(S1, S2, n - 1, m - 1, dp);
+}
+```
+
+Best Time to Buy and Sell Stock		
+```
+int maximumProfit(vector<int> &Arr){
+	int maxProfit = 0;
+	int mini = Arr[0];
+	for(int i=1;i<Arr.size();i++){
+        int curProfit = Arr[i] - mini;
+        maxProfit = max(maxProfit,curProfit);
+        mini = min(mini,Arr[i]);
+        }
+	return maxProfit;
+}
+```
+
+Buy and Sell Stock any number of times	
+```
+long getAns(long *Arr, int ind, int buy, int n, vector<vector<long>> &dp) {
+    if (ind == n) return 0;
+    if (dp[ind][buy] != -1) return dp[ind][buy];
+    long profit = 0;
+    if (buy == 0) profit = max(0 + getAns(Arr, ind + 1, 0, n, dp), -Arr[ind] + getAns(Arr, ind + 1, 1, n, dp));
+    if (buy == 1) profit = max(0 + getAns(Arr, ind + 1, 1, n, dp), Arr[ind] + getAns(Arr, ind + 1, 0, n, dp));
+    return dp[ind][buy] = profit;
+}
+
+long getMaximumProfit(long *Arr, int n) {
+    vector<vector<long>> dp(n, vector<long>(2, -1));
+    if (n == 0) return 0;
+    long ans = getAns(Arr, 0, 0, n, dp);
+    return ans;
+}
+```
+
+Buy and Sell Stocks 2 transactions	
+```
+int getAns(vector<int>& Arr, int n, int ind, int buy, int cap, vector<vector<vector<int>>>& dp) {
+    if (ind == n || cap == 0) return 0;
+    if (dp[ind][buy][cap] != -1) return dp[ind][buy][cap];
+    int profit;
+    if (buy == 0) profit = max(0 + getAns(Arr, n, ind + 1, 0, cap, dp),-Arr[ind] + getAns(Arr, n, ind + 1, 1, cap, dp));
+    if (buy == 1) profit = max(0 + getAns(Arr, n, ind + 1, 1, cap, dp),Arr[ind] + getAns(Arr, n, ind + 1, 0, cap - 1, dp));
+    return dp[ind][buy][cap] = profit;
+}
+
+int maxProfit(vector<int>& prices, int n) {
+    vector<vector<vector<int>>> dp(n, vector<vector<int>>(2, vector<int>(3, -1)));
+    return getAns(prices, n, 0, 0, 2, dp);
+}
+```
+	
+Buy and Stock Sell K transactions	
+```
+int getAns(vector<int>& Arr, int n, int ind, int buy, int cap, vector<vector<vector<int>>>& dp) {
+    if (ind == n || cap == 0) return 0;
+    if (dp[ind][buy][cap] != -1) return dp[ind][buy][cap];
+    int profit;
+    if (buy == 0) profit = max(0 + getAns(Arr, n, ind + 1, 0, cap, dp),-Arr[ind] + getAns(Arr, n, ind + 1, 1, cap, dp));
+    if (buy == 1) profit = max(0 + getAns(Arr, n, ind + 1, 1, cap, dp),Arr[ind] + getAns(Arr, n, ind + 1, 0, cap - 1, dp));
+    return dp[ind][buy][cap] = profit;
+}
+
+int maximumProfit(vector<int>& prices, int n, int k) {
+    vector<vector<vector<int>>> dp(n,vector<vector<int>>(2, vector<int>(k + 1, -1)));
+    return getAns(prices, n, 0, 0, k, dp);
+}
+```
+	
+Buy and Sell Stocks With Cooldown	
+```
+int getAns(vector<int> Arr, int ind, int buy, int n, vector<vector<int>> &dp) {
+    if (ind >= n) return 0;
+    if (dp[ind][buy] != -1) return dp[ind][buy];
+    int profit;
+    if (buy == 0) profit = max(0 + getAns(Arr, ind + 1, 0, n, dp), -Arr[ind] + getAns(Arr, ind + 1, 1, n, dp));
+    if (buy == 1) profit = max(0 + getAns(Arr, ind + 1, 1, n, dp), Arr[ind] + getAns(Arr, ind + 2, 0, n, dp));
+    return dp[ind][buy] = profit;
+}
+
+int stockProfit(vector<int> &Arr) {
+    int n = Arr.size();
+    vector<vector<int>> dp(n, vector<int>(2, -1));
+    int ans = getAns(Arr, 0, 0, n, dp);
+    return ans;
+}
+```
+	
+Buy and Sell Stocks With Transaction Fee
+```
+int getAns(vector<int> &Arr, int ind, int buy, int n, int fee, vector<vector<int>> &dp) {
+    if (ind == n) return 0;
+    if (dp[ind][buy] != -1) return dp[ind][buy];
+    int profit;
+    if (buy == 0) profit = max(0 + getAns(Arr, ind + 1, 0, n, fee, dp), -Arr[ind] + getAns(Arr, ind + 1, 1, n, fee, dp));
+    if (buy == 1) profit = max(0 + getAns(Arr, ind + 1, 1, n, fee, dp), Arr[ind] - fee + getAns(Arr, ind + 1, 0, n, fee, dp));
+    return dp[ind][buy] = profit;
+}
+
+int maximumProfit(int n, int fee, vector<int> &Arr) {
+    vector<vector<int>> dp(n, vector<int>(2, -1));
+    if (n == 0) return 0;
+    int ans = getAns(Arr, 0, 0, n, fee, dp);
+    return ans;
+}
+```
+
+Longest Increasing Subsequence		
+```
+int getAns(int arr[], int n, int ind, int prev_index, vector<vector<int>>& dp) {
+    if (ind == n) return 0;
+    if (dp[ind][prev_index + 1] != -1) return dp[ind][prev_index + 1];
+    int notTake = 0 + getAns(arr, n, ind + 1, prev_index, dp);
+    int take = 0;
+    if (prev_index == -1 || arr[ind] > arr[prev_index]) take = 1 + getAns(arr, n, ind + 1, ind, dp);
+    return dp[ind][prev_index + 1] = max(notTake, take);
+}
+
+int longestIncreasingSubsequence(int arr[], int n) {
+    vector<vector<int>> dp(n, vector<int>(n + 1, -1));
+    return getAns(arr, n, 0, -1, dp);
+}
+```
+
+Printing Longest Increasing Subsequence	
+```
+int longestIncreasingSubsequence(int arr[], int n){
+    vector<int> dp(n,1);
+    vector<int> hash(n,1);
+    for(int i=0; i<=n-1; i++){
+        hash[i] = i;
+        for(int prev_index = 0; prev_index <=i-1; prev_index ++){
+            if(arr[prev_index]<arr[i] && 1 + dp[prev_index] > dp[i]){
+                dp[i] = 1 + dp[prev_index];
+                hash[i] = prev_index;
+            }
+        }
+    }
+    int ans = -1;
+    int lastIndex =-1;
+    for(int i=0; i<=n-1; i++){
+        if(dp[i]> ans){
+            ans = dp[i];
+            lastIndex = i;
+        }
+    }
+    vector<int> temp;
+    temp.push_back(arr[lastIndex]);
+    while(hash[lastIndex] != lastIndex){
+        lastIndex = hash[lastIndex];
+        temp.push_back(arr[lastIndex]);    
+    }
+    reverse(temp.begin(),temp.end());
+    for(int i=0; i<temp.size(); i++) cout<<temp[i]<<" ";
+    return ans;
+}
+```
+
+Longest Increasing Subsequence Binary Search
+```
+int longestIncreasingSubsequence(int arr[], int n) {
+    vector<int> temp;
+    temp.push_back(arr[0]);
+    int len = 1;
+    for (int i = 1; i < n; i++) {
+        if (arr[i] > temp.back()) {
+            temp.push_back(arr[i]);
+            len++;
+        } 
+        else {
+            int ind = lower_bound(temp.begin(), temp.end(), arr[i]) - temp.begin();
+            temp[ind] = arr[i];
+        }
+    }
+    return len;
+}
+```
+
+Largest Divisible Subset		
+```
+vector<int> divisibleSet(vector<int>& arr) {
+    int n = arr.size();
+    sort(arr.begin(), arr.end());
+    vector<int> dp(n, 1);   
+    vector<int> hash(n, i); 
+    for (int i = 0; i < n; i++) {
+        hash[i] = i; // Initialize with the current index
+        for (int prev_index = 0; prev_index < i; prev_index++) {
+            if (arr[i] % arr[prev_index] == 0 && 1 + dp[prev_index] > dp[i]) {
+                dp[i] = 1 + dp[prev_index];
+                hash[i] = prev_index;
+            }
+        }
+    }
+    int ans = -1;
+    int lastIndex = -1;
+    for (int i = 0; i < n; i++) {
+        if (dp[i] > ans) {
+            ans = dp[i];
+            lastIndex = i;
+        }
+    }
+    vector<int> temp;
+    temp.push_back(arr[lastIndex]);
+    while (hash[lastIndex] != lastIndex) {
+        lastIndex = hash[lastIndex];
+        temp.push_back(arr[lastIndex]);
+    }
+    reverse(temp.begin(), temp.end());
+    return temp;
+}
+```
+
+Longest String Chain	
+```
+bool compare(string& s1, string& s2){
+    if(s1.size() != s2.size() + 1) return false;
+    int first = 0;
+    int second = 0;
+    while(first < s1.size()){
+        if(second < s2.size() && s1[first] == s2[second]){
+            first ++;
+            second ++;
+        }
+        else first ++;
+    }
+    if(first == s1.size() && second == s2.size()) return true;
+    else return false; 
+}
+
+bool comp(string& s1, string& s2){
+    return s1.size() < s2.size();
+}
+
+int longestStrChain(vector<string>& arr){
+    int n = arr.size();
+    sort(arr.begin(), arr.end(),comp);
+    vector<int> dp(n,1);
+    int maxi = 1;
+    for(int i=0; i<=n-1; i++){
+        for(int prev_index = 0; prev_index <=i-1; prev_index ++){
+            if( compare(arr[i], arr[prev_index]) && 1 + dp[prev_index] > dp[i]){
+                dp[i] = 1 + dp[prev_index];
+            }
+        }
+        if(dp[i] > maxi) maxi = dp[i];
+    }
+    return maxi;
+}
+```
+
+Longest Bitonic Subsequence	
+```
+int longestBitonicSequence(vector<int>& arr, int n) {
+    vector<int> dp1(n, 1); 
+    vector<int> dp2(n, 1); 
+    for (int i = 0; i < n; i++) {
+        for (int prev_index = 0; prev_index < i; prev_index++) {
+            if (arr[prev_index] < arr[i]) {
+                dp1[i] = max(dp1[i], 1 + dp1[prev_index]);
+            }
+        }
+    }
+    for (int i = n - 1; i >= 0; i--) {
+        for (int prev_index = n - 1; prev_index > i; prev_index--) {
+            if (arr[prev_index] < arr[i]) {
+                dp2[i] = max(dp2[i], 1 + dp2[prev_index]);
+            }
+        }
+    }
+    int maxi = -1;
+    for (int i = 0; i < n; i++) maxi = max(maxi, dp1[i] + dp2[i] - 1);
+    return maxi;
+}
+```
+
+Number of Longest Increasing Subsequences
+```
+int findNumberOfLIS(vector<int>& arr) {
+    int n = arr.size();
+    vector<int> dp(n, 1);
+    vector<int> ct(n, 1);
+    int maxi = 1;
+    for (int i = 0; i < n; i++) {
+        for (int prev_index = 0; prev_index < i; prev_index++) {
+            if (arr[prev_index] < arr[i] && dp[prev_index] + 1 > dp[i]) {
+                dp[i] = dp[prev_index] + 1;
+                ct[i] = ct[prev_index];
+            } 
+            else if (arr[prev_index] < arr[i] && dp[prev_index] + 1 == dp[i]) {
+                ct[i] = ct[i] + ct[prev_index];
+            }
+        }
+        maxi = max(maxi, dp[i]);
+    }
+    int numberOfLIS = 0;
+    for (int i = 0; i < n; i++) {
+        if (dp[i] == maxi) numberOfLIS += ct[i];
+    }
+    return numberOfLIS;
+}
+```
+
+Matrix Chain Multiplication	
+```
+```	
+
+Minimum Cost to Cut the Stick		
+```
+```	
+
+Burst Balloons	
+```
+```	
+
+Evaluate Boolean Expression to True		
+```
+```	
+
+Palindrome Partitioning		
+```
+```	
+
+Partition Array for Maximum Sum		
+```
+```	
+
+Maximum Rectangle Area with all 1's	
+```
+```	
+
+Count Square Submatrices with All Ones
+```
+```	
+
 
 # Trie
