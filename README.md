@@ -1545,6 +1545,108 @@ Node* copyRandomList(Node* head) {
 
 # Sliding Window and Two Pointer
 
+Longest Substring Without Repeating Characters
+```
+int lengthOfLongestSubstring(string s) {
+    int f[256]={0};
+    int i=0,j=0,n=s.size(),ma=0;
+    while(j<n){
+        while(j<n && f[s[j]]==0) f[s[j++]]++;
+        ma=max(ma,j-i);
+        while(i<j && s[i]!=s[j]) f[s[i++]]--;
+        f[s[i++]]--;
+    }
+    return ma;
+}
+```
+Max Consecutive Ones III
+```
+int longestOnes(vector<int>& a, int k) {
+    int n = a.size(),j=0,c=0,ans=0;
+    for(int i=0;i<n;i++){
+        while(j<n && !(a[j]==0 && c==k)){
+            if(a[j]==0) c++;
+            j++;
+        }
+        ans=max(ans,j-i);
+        if(a[i]==0) c--;
+    }
+    return ans;
+}
+```
+Binary subarray with sum
+```
+int numSubarraysWithSum(vector<int>& a, int k) {
+    int n = a.size(),i=0,j=0,c=0,ans=0,rc,lc;
+    if(k==0){
+        for(auto it:a){
+            if(!it) c++;
+            else{
+                ans+=((c*(c+1))/2);
+                c=0;
+            }
+        }
+        ans+=((c*(c+1))/2);
+        return ans;
+    }
+    while(i<n && j<n){
+        rc=0;lc=0;
+        while(j<n && !(a[j] && c==k)){
+            if(a[j]) c++;
+            if(c==k) rc++; 
+            j++;
+        }
+        while(c==k) {
+            if(a[i]) c--;
+            lc++;
+            i++;
+        }
+        ans+=(rc*lc);
+    }
+    return ans; 
+}
+```
+
+Count Number of Nice Subarrays
+```
+int numberOfSubarrays(vector<int>& a, int k) {
+    int n = a.size(),i=0,j=0,c=0,ans=0,rc,lc;
+    while(i<n && j<n){
+        rc=0;lc=0;
+        while(j<n && !(a[j]%2 && c==k)){
+            if(a[j]%2) c++;
+            if(c==k) rc++; 
+            j++;
+        }
+        while(c==k) {
+            if(a[i]%2) c--;
+            lc++;
+            i++;
+        }
+        ans+=(rc*lc);
+    }
+    return ans;
+}
+```
+
+Maximum Points You Can Obtain from Cards
+```
+int maxScore(vector<int>& a, int k) {
+    if(k==a.size()) return accumulate(a.begin(),a.end(),0);
+    int ans=0,sum=0;
+    for(int i=0;i<k;i++){
+        sum+=(a[i+a.size()-k]);
+    }
+    ans=max(ans,sum);
+    for(int i=0;i<k;i++){
+        sum-=(a[i+a.size()-k]);
+        sum+=a[i];
+        ans=max(ans,sum);
+    }
+    return ans;
+}
+```
+
 # Heap
 
 # Greedy
