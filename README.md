@@ -1574,6 +1574,58 @@ int longestOnes(vector<int>& a, int k) {
     return ans;
 }
 ```
+
+Fruits and Baskets
+```
+int findMaxFruits(vector<int> &a, int n) {
+    int l=0,r=0,cnt=0,ans=0;
+    int f[10001]={0};
+    while(r<n){
+        while(r<n && cnt<=2){
+            if(f[a[r]]==0) cnt++;
+            f[a[r]]++;
+            r++;
+        }
+        ans=max(ans,r-l-1);
+        while(l<r && cnt>2){
+            f[a[l]]--;
+            if(f[a[l]]==0) cnt--;
+            l++;
+        }
+    }
+    return ans;
+}
+```
+
+Longest Repeating Character Replacement
+```
+int maxFrequentElement(int f[]){
+    int ma=0;
+    for(int i=0;i<26;i++){
+        ma=max(ma,f[i]);
+    }
+    return ma;
+}
+
+int characterReplacement(string s, int k) {
+    int l=0,r=0,n=s.size(),ans=0;
+    int f[26]={0};
+    f[s[0]-'A']++;
+    while(r<n){
+        while(r<n && r-l+1-maxFrequentElement(f)<=k){
+            r++;
+            if(r<n) f[s[r]-'A']++;
+        }
+        ans=max(ans,r-l);
+        while(l<r && r-l+1-maxFrequentElement(f)>k){
+            f[s[l]-'A']--;
+            l++;
+        }
+    }
+    return ans;
+}
+```
+
 Binary subarray with sum
 ```
 int numSubarraysWithSum(vector<int>& a, int k) {
@@ -1629,6 +1681,28 @@ int numberOfSubarrays(vector<int>& a, int k) {
 }
 ```
 
+Number of Substrings Containing All Three Characters
+```
+int numberOfSubstrings(string s) {
+    int mp[3]={0};
+    int c=0,ans=0;
+    int i=0;
+    for(int j=0;j<s.size();j++){
+        mp[s[j]-'a']++;
+        if(mp[s[j]-'a']==1) c++;
+            while(i<s.size() && c==3){
+                ans+=(s.size()-j);
+                mp[s[i]-'a']--;
+                if(mp[s[i]-'a']==0){
+                    c--;
+                }
+                i++;
+            }
+    }
+    return ans;
+}
+```
+
 Maximum Points You Can Obtain from Cards
 ```
 int maxScore(vector<int>& a, int k) {
@@ -1646,10 +1720,77 @@ int maxScore(vector<int>& a, int k) {
     return ans;
 }
 ```
+Longest Substring with At Most K Distinct Characters
+```
+int kDistinctChars(int k, string a)
+{
+    int l=0,r=0,cnt=0,ans=0,n=a.size();
+    int f[26]={0};
+    while(r<n){
+        while(r<n && !(cnt==k && f[a[r]-'a']==0)){
+            if(f[a[r]-'a']==0) cnt++;
+            f[a[r]-'a']++;
+            r++;
+        }
+        ans=max(ans,r-l);
+        while(l<r){
+            f[a[l]-'a']--;
+            if(f[a[l]-'a']==0) break;
+            l++;
+        }
+        l++;
+        cnt--;
+    }
+    return ans;
+}
+```
+Subarrays with K Different Integers
+```
+int subarraysAtmostKDistinct(vector<int>& a, int k){
+    int l=0,r=0,cnt=0,ans=0,n=a.size();
+    int f[20001]={0};
+    while(r<n){
+        while(r<n){
+            if(cnt==k && f[a[r]]==0) break;
+            if(f[a[r]]==0) cnt++;
+            f[a[r]]++;
+            ans+=(r-l+1);
+            r++;
+        }
+        while(l<r){
+            if(cnt<k) break;
+            f[a[l]]--;
+            if(f[a[l]]==0) cnt--;
+            l++;
+        }
+    }
+    return ans;
+}
+
+int subarraysWithKDistinct(vector<int>& a, int k) {
+    int c=subarraysAtmostKDistinct(a,k);
+    if(k==1) return c;
+    return c-subarraysAtmostKDistinct(a,k-1);
+}
+```
 
 # Heap
 
 # Greedy
+
+Assign Cookies
+```
+int findContentChildren(vector<int>& g, vector<int>& s) {
+    int i=0,j=0,c=0;
+    sort(g.begin(),g.end());
+    sort(s.begin(),s.end());
+    while(i<g.size() && j<s.size()){
+        if(g[i]<=s[j]) i++,j++,c++;
+        else j++;
+    }
+    return c;
+}
+```
 
 # Binary Tree 
 
