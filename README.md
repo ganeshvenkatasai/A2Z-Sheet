@@ -1,4 +1,3 @@
-
 # Array
 
 Left rotate an array by D places
@@ -1539,9 +1538,351 @@ Node* copyRandomList(Node* head) {
 
 # Recursion
 
+All combintions without repetitions
+```
+#include <bits/stdc++.h>
+using namespace std;
+
+void f(vector<int> &a, vector<int> &ds, int ind){
+    if(ind==a.size()){
+        cout<<"[";
+        for(auto it:ds) cout<<it<<" ";
+        cout<<"]\n";
+        return;
+    }
+    ds.push_back(a[ind]);
+    f(a,ds,ind+1);
+    ds.pop_back();
+    f(a,ds,ind+1);
+}
+
+int main() {
+    vector<int> a = {1,2,3};
+    vector<int> ds;
+    f(a, ds, 0);
+    return 0;
+}
+```
+All permutations without repetitions
+```
+#include <bits/stdc++.h>
+using namespace std;
+
+void f(vector<int> &a, vector<int> &ds, vector<bool> &vis, int ind){
+    if(ind==ds.size()){
+        cout<<"[";
+        for(auto it:ds) cout<<it<<" ";
+        cout<<"]\n";
+        return;
+    }
+    for(int i=0;i<a.size();i++){
+        if(!vis[i]){
+            vis[i]=true;
+            ds[ind]=a[i];
+            f(a, ds, vis, ind+1);
+            vis[i]=false;
+        }
+    }
+}
+
+int main() {
+    
+    vector<int> a = {1,2,3,4};
+    vector<int> ds(a.size()); // size can be adjusted here
+    vector<bool> vis(a.size(),false);
+    f(a, ds, vis, 0);
+    return 0;
+}
+```
+
+All subarray Partitions
+```
+class Solution {
+public:
+    
+    vector<vector<pair<int,int>>> v;
+    vector<pair<int,int>> ds;
+    
+    void f(vector<int>& a, int ind){
+        if(ind == a.size()){
+            v.push_back(ds);
+            return;
+        }
+        for(int i=ind;i<a.size();i++){
+            ds.push_back({ind,i});
+            f(a, i+1);
+            ds.pop_back();
+        }
+    }
+    
+    double largestSumOfAverages(vector<int>& a, int k) {
+        f(a, 0);
+        for(auto it:v){
+            for(auto jt:it){
+                cout<<"["<<jt.first<<"-"<<jt.second<<"]"<<" ";
+            }
+            cout<<"\n";
+        }
+        return 0.0;
+    }
+};
+```
+
 # Bit Manipulation
 
 # Stack and Queue
+
+Next Greater Element I
+
+```
+vector<int> nextGreaterElement(vector<int>& n1, vector<int>& n2) {
+    map<int,int> mp;
+    stack<int> s;
+    for(int i=n2.size()-1;i>=0;i--){
+        while(!s.empty() && n2[i]>=s.top()) s.pop();
+        if(!s.empty()) mp[n2[i]]=s.top();
+        else mp[n2[i]]=-1;
+        s.push(n2[i]);
+    }
+    vector<int> v;
+    for(auto it:n1) v.push_back(mp[it]);
+    return v;
+}
+```
+
+Next Greater Element II
+
+```
+vector<int> nextGreaterElements(vector<int>& a) {
+    int n=a.size();
+    stack<int> s;
+    vector<int> res(n,-1);
+    for(int i=2*n-1;i>=0;i--){
+        while(!s.empty() && a[i%n]>=s.top()) s.pop();
+        if(!s.empty()) res[i%n]=s.top();
+        s.push(a[i%n]);
+    }
+    return res;
+}
+```
+Trapping Rain Water
+
+```
+int trap(vector<int>& a) {
+    int n=a.size(),ma=0,ans=0,v;
+    vector<int> l(a);
+    vector<int> r(a);
+    for(int i=0;i<n;i++){
+        l[i]=ma;
+        ma=max(ma,a[i]);
+    }
+    ma=0;
+    for(int i=n-1;i>=0;i--){
+        r[i]=ma;
+        ma=max(ma,a[i]);
+    }
+    for(int i=0;i<n;i++){
+        v=min(l[i],r[i])-a[i];
+        if(v>0) ans+=v;
+    }
+    return ans;
+}
+```
+Sum of Subarray Minimums
+```
+void left(vector<int> &l,vector<int> &h){
+    stack<int> s;
+    for(int i=0;i<h.size();i++){
+        while(!s.empty() && h[i]<=h[s.top()]) s.pop();
+        if(!s.empty()) l[i]=s.top();
+        s.push(i);
+    }
+}
+
+void right(vector<int> &r,vector<int> &h){
+    stack<int> s;
+    for(int i=h.size()-1;i>=0;i--){
+        while(!s.empty() && h[i]<h[s.top()]) s.pop();
+        if(!s.empty()) r[i]=s.top();
+        s.push(i);
+    }
+}
+
+int sumSubarrayMins(vector<int>& a) {
+    vector<int> l(a.size(),-1);
+    vector<int> r(a.size(),a.size());
+    left(l,a);
+    right(r,a);
+    long long int ans=0,m=1e9+7;
+    for(int i=0;i<a.size();i++){
+        ans= (ans + (( (i-l[i])%m * (r[i]-i)%m )%m * a[i])%m)%m;
+    }
+    return ans;
+}
+```
+
+Largest Rectangle in Histogram
+```
+void left(vector<int> &l,vector<int> &h){
+    stack<int> s;
+    for(int i=0;i<h.size();i++){
+        while(!s.empty() && h[i]<=h[s.top()]) s.pop();
+        if(!s.empty()) l[i]=s.top();
+        s.push(i);
+    }
+}
+
+void right(vector<int> &r,vector<int> &h){
+    stack<int> s;
+    for(int i=h.size()-1;i>=0;i--){
+        while(!s.empty() && h[i]<=h[s.top()]) s.pop();
+        if(!s.empty()) r[i]=s.top();
+        s.push(i);
+    }
+}
+
+
+int largestRectangleArea(vector<int>& h) {
+    vector<int> l(h.size(),-1);
+    vector<int> r(h.size(),h.size());
+    left(l,h);
+    right(r,h);
+    int ans=0;
+    for(int i=0;i<h.size();i++){
+        ans=max(ans,h[i]*(r[i]-l[i]-1));
+    }
+    return ans;
+}
+```
+Maximal Rectangles
+```
+int maximalRectangle(vector<vector<char>>& m) {
+    int ans=0;
+    vector<vector<int>> g(m.size(),vector<int>(m[0].size(),0));
+    for(int j=0;j<m[0].size();j++){
+        int c=0;
+        for(int i=0;i<m.size();i++){
+            if(m[i][j]=='1') c++,g[i][j]=c;
+            else c=0;
+        }
+    }
+    for(auto it:g){
+        ans=max(ans,largestRectangleArea(it));
+    }
+    return ans;
+}
+```
+Sliding Window Maximum
+
+```
+vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+    deque<int> dq;
+    for(int i=0;i<k;i++){
+        while(!dq.empty() && nums[i]>dq.back()) dq.pop_back();
+        dq.push_back(nums[i]);
+    }
+    vector<int> res;
+    for(int i=k;i<nums.size();i++){
+        res.push_back(dq.front());
+        if(dq.front()==nums[i-k]) dq.pop_front();
+        while(!dq.empty() && nums[i]>dq.back()) dq.pop_back();
+        dq.push_back(nums[i]);
+    }
+    res.push_back(dq.front());
+    return res;
+}
+```
+The Celebrity Problem
+```
+int celebrity(vector<vector<int> >& m, int n) {
+    vector<int> in(n,0);
+    vector<int> ou(n,0);
+    for(int i=0;i<n;i++){
+        for(int j=0;j<n;j++){
+            if(m[i][j]) ou[i]++,in[j]++;
+        }
+    }
+    for(int i=0;i<n;i++){
+        if(!ou[i] && in[i]==n-1) return i;
+    }
+    return -1;
+}
+```
+LRU Cache
+```
+class LRUCache {
+public:
+    class Node{
+        public:
+            int key;
+            int val;
+            Node* prev;
+            Node* next;
+
+            Node(int key, int val){
+                this->key = key;
+                this->val = val;
+                this->prev = NULL;
+                this->next = NULL;
+            }
+    };
+
+    int cap;
+    unordered_map<int,Node*> mp;
+
+    Node* head = new Node(-1,-1);
+    Node* tail = new Node(-1,-1);
+
+    LRUCache(int capacity) {
+        head->next = tail;
+        tail->prev = head;
+        cap = capacity;
+    }
+
+    void addNode(Node* newnode){
+        Node* temp = head->next;
+        newnode->next = temp;
+        newnode->prev = head;
+        head->next = newnode;
+        temp->prev = newnode;
+    }
+
+    void deleteNode(Node* delnode){
+        Node* prv = delnode->prev;
+        Node* nxt = delnode->next;
+        prv->next = nxt;
+        nxt->prev = prv;
+    }
+    
+    int get(int key) {
+        if(mp.find(key)!=mp.end()){
+            Node* node = mp[key];
+            int value = node->val;
+            deleteNode(node);
+            addNode(node);
+            mp[key] = head->next;
+            return value;
+        }
+        return -1;
+    }
+    
+    void put(int key, int value) {
+        if(mp.find(key)!=mp.end()){
+            Node* node = mp[key];
+            mp.erase(key);
+            deleteNode(node); 
+        }
+
+        if(mp.size() == cap){
+            mp.erase(tail->prev->key);
+            deleteNode(tail->prev);
+        }
+
+        addNode(new Node(key,value));
+        mp[key] = head->next;
+    }
+};
+```
 
 # Sliding Window and Two Pointer
 
