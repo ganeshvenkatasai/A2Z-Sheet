@@ -972,6 +972,32 @@ string reverseWords(string s) {
     return a;
 }
 ```
+Largest odd number in a string
+```
+string largestOddNumber(string num) {
+    while(num.size()>0) 
+        if((num[num.size()-1]-'0')%2!=0) return num; 
+        else num.pop_back();
+    return num;
+}
+```
+Longest Common Prefix
+```
+string longestCommonPrefix(vector<string>& strs) {
+    string ans="";
+    int match=1;
+    string base=strs[0];
+
+    for(int i=0;i<base.size();i++){
+        for(int j=1;j<strs.size();j++){
+            if(strs[j][i]!=base[i]) match=0;
+        }
+        if(match) ans+=base[i];
+        else break;
+    }        
+    return ans;
+}
+```
 Isomorphic String
 ```
 bool isIsomorphic(string s, string t) {
@@ -987,6 +1013,23 @@ bool isIsomorphic(string s, string t) {
 ```
 One string is a rotation of another
 ```
+bool kmp(string s, int n){
+    vector<int> lps(s.size(), 0);
+    for(int i=1;i<lps.size();i++){
+        int prev_idx = lps[i-1];
+        while(prev_idx>0 && s[i] != s[prev_idx]){
+            prev_idx = lps[prev_idx-1];
+        }
+        lps[i] = prev_idx + (s[i]==s[prev_idx] ? 1 : 0);
+        if(lps[i]==n) return true;
+    }
+    return false;
+}
+
+bool rotateString(string s, string goal) {
+    string str=goal+"#"+s+s;
+    return kmp(str,s.size());
+}
 ```
 Valid Anagram
 ```
@@ -1078,7 +1121,7 @@ string intToRoman(int num) {
     return ans;
 }
 ```
-String to Integer
+String to Integer (Atoi)
 ```
 int myAtoi(string s) {
     int i=0,flag=1;
@@ -1120,7 +1163,6 @@ string longestPalindrome(string s) {
 }
 ```
 Sum of Beauty of All Substrings
-
 ```
 int beautySum(string s) {
     if(s.size()<3) return 0;
@@ -1146,11 +1188,54 @@ int beautySum(string s) {
     return a;
 }
 ```
+
+Reverse Every Word in A String
+```
+string reverseWords(string s) {
+    string t,a;
+    for(auto it:s){
+        if(it==' ') {if(t.size()) a=t+" "+a, t="";}
+        else t+=it;
+    }
+    if(t.size()) a=t+" "+a;
+    a.pop_back();
+    return a;
+}
+```
 Minimum number of bracket reversals				
 ```
+int minAddToMakeValid(string s) {
+    int c=0,n=0;
+    for(auto it:s){
+        it=='('?c++:c--;
+        if(c<0) n++,c=0;
+    }
+    return c+n;
+}
 ```
 Count and say							
 ```
+string countAndSay(int n) {
+    int count=1;
+    string s="1";
+    string ans="";
+    for(int i=0;i<n-1;i++){
+        ans="";
+        for(int j=0;j<s.size();j++){
+            if(s[j]==s[j+1]){
+                count++;
+            }
+            else{
+                ans+=to_string(count);
+                ans+=s[j];
+                count=1;
+            }
+        }
+        s="";
+        s=ans;
+    }
+    return s;
+}
 ```
 Rabin Karp				
 ```
@@ -1160,6 +1245,23 @@ Z-Function
 ```
 KMP algo / LPS(pi) array				
 ```
+int kmp(string s, int n){
+    vector<int> lps(s.size(), 0);
+    for(int i=1;i<lps.size();i++){
+        int prev_idx = lps[i-1];
+        while(prev_idx>0 && s[i] != s[prev_idx]){
+            prev_idx = lps[prev_idx-1];
+        }
+        lps[i] = prev_idx + (s[i]==s[prev_idx] ? 1 : 0);
+        if(lps[i]==n) return i-2*n;
+    }
+    return -1;
+}
+
+int strStr(string haystack, string needle) {
+    string s=needle+"#"+haystack;
+    return kmp(s,needle.size());
+}
 ```
 Shortest Palindrome				
 ```
@@ -2113,6 +2215,12 @@ int subarraysWithKDistinct(vector<int>& a, int k) {
     if(k==1) return c;
     return c-subarraysAtmostKDistinct(a,k-1);
 }
+```
+Minimum Window Substring
+```
+```
+Minimum Window Subsequence
+```
 ```
 
 # Heap
@@ -4891,10 +4999,66 @@ Evaluate Boolean Expression to True
 
 Palindrome Partitioning		
 ```
+int dp[2001];
+
+bool isPalindrome(int l,int r,string &s){
+    while(l<r){
+        if(s[l]!=s[r]) return false;
+        l++;
+        r--;
+    }
+    return true;
+}
+
+int f(int ind,int n,string s){
+    if(ind==n) return 0;
+    if(dp[ind]!=-1) return dp[ind];
+    int minVal=INT_MAX;
+    for(int i=ind;i<n;i++){
+        if(isPalindrome(ind,i,s)){
+            minVal=min(minVal,f(i+1,n,s));
+        }
+    }
+    return dp[ind]=1+minVal;
+}
+
+int minCut(string s) {
+    memset(dp,-1,sizeof(dp));
+    int n=s.size();
+    for(int ind=n-1;ind>=0;ind--){
+        int minVal=1e9;
+        for(int i=ind;i<n;i++){
+            if(isPalindrome(ind,i,s)){
+                minVal=min(minVal,f(i+1,n,s));
+            }
+        }
+        dp[ind]=1+minVal;
+    }
+    
+    return dp[0]-1;
+}
 ```	
 
 Partition Array for Maximum Sum		
 ```
+int dp[501];
+
+int f(int ind,int n,vector<int>& a,int k){
+    if(ind==n) return 0;
+    int maxVal=0;
+    int maxAns=0;
+    if(dp[ind]!=-1) return dp[ind];
+    for(int i=ind;i<min(ind+k,n);i++){
+        maxVal=max(maxVal,a[i]);
+        maxAns=max(maxAns,(i-ind+1)*maxVal + f(i+1,n,a,k));
+    }
+    return dp[ind]=maxAns;
+}
+
+int maxSumAfterPartitioning(vector<int>& a, int k) {
+    memset(dp,-1,sizeof(dp));
+    return f(0,a.size(),a,k);
+}
 ```	
 
 Maximum Rectangle Area with all 1's	
